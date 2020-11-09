@@ -100,7 +100,7 @@ func main() {
 	// r.POST("/car_location", addNewCarLocation)
 
 	r.GET("/car", getCarInformation)
-	r.POST("/car", insertNewCar)
+	r.POST("/car/:car_id", insertNewCar)
 
 	r.GET("/car_location/:car_id", getCarLocation)
 	r.PUT("/car_location/:car_id", updateCarLocation)

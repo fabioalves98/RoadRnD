@@ -3,7 +3,7 @@
 
 `/car GET (All cars)`
 
-`/car POST (Body params)` 
+`/car/{car_id} POST (Body params)` 
 ```javascript
 {
     "location" : "41.40338, 2.17403"
