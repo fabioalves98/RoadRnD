@@ -1,0 +1,16 @@
+version: '3.3'
+services:
+  api:
+    build: .
+    depends_on:
+      - postgres
+    ports:
+      - "8080:8080"
+  postgres:
+    image: "postgres:latest"
+    environment:
+      POSTGRES_DB: "db"
+      POSTGRES_USER: "db"
+      POSTGRES_PASSWORD: "db_pass"
+    ports:
+      - "5432:5432"
