@@ -3,8 +3,8 @@
 
 `/car GET (All cars)`
 
+`/car POST (Body params)` 
 ```javascript
-/car POST (Body params) 
 {
     "location" : "41.40338, 2.17403"
     "status"   : "Parked"
@@ -14,8 +14,8 @@
 
 `/car_location/{car_id} GET (specific car)`
 
+`/car_location/{car_id} PUT (body params with the updated fields)`
 ```javascript
-/car_location/{car_id} PUT (body params with the updated fields)
 {
     "location" : "41.40338, 2.17403"
 }
@@ -24,8 +24,9 @@
 
 `/car_status/{car_id} GET`
 
+
+`/car_status/{car_id} PUT`
 ```javascript
-/car_status/{car_id} PUT
 {
     "status"   : "Parked"
 }

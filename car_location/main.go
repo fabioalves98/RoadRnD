@@ -95,9 +95,18 @@ func main() {
 
     // Creating all routes
 
-    r.POST("/update_status", updateVehicleStatus)
-    r.GET("/car_location", getCarLocation)
-	r.POST("/car_location", addNewCarLocation)
+    // r.POST("/update_status", updateVehicleStatus)
+    // r.GET("/car_location", getCarLocation)
+	// r.POST("/car_location", addNewCarLocation)
+
+	r.GET("/car", getCarInformation)
+	r.POST("/car", insertNewCar)
+
+	r.GET("/car_location/:car_id", getCarLocation)
+	r.PUT("/car_location/:car_id", updateCarLocation)
+
+	r.GET("/car_status/:car_id", getCarStatus)
+	r.PUT("/car_status/:car_id", updateCarStatus)
 
 	// router.PUT("/somePut", putting)
 
@@ -133,38 +142,89 @@ func main() {
 // }
 
 
-func updateVehicleStatus(c *gin.Context){
 
-    c.JSON(200, gin.H{
-        "message": "status_page",
-    })
-}
+func getCarInformation(c *gin.Context){
 
-func getCarLocation(c *gin.Context){
-
-	// Should parse params like the location asked, the status of cars
-	// asked (currently rented, not yet rented)....
+	// Should fetch database for all cars
 	car_locations := []car{}
-	example1 := car{Car_id: "7837289", Location: "41.40338, 2.17403", Status: "Rented"}
-	example2 := car{Car_id: "4782917", Location: "44.23331, 7.63727", Status: "Rented"}
+	example1 := car{Car_id: "AA-01-AA", Location: "41.40338, 2.17403", Status: "Rented"}
+	example2 := car{Car_id: "LD-34-CV", Location: "44.23331, 7.63727", Status: "Rented"}
 	car_locations = append(car_locations, example1)
 	car_locations = append(car_locations, example2)
 
 	c.JSON(200, gin.H{
 		"code" : 200,
-		// Returns array of corresponding cars using {carid: DecimalDegrees}
+		// Returns array of corresponding cars using 
 		"message" : car_locations,
 	})
 
 }
 
-func addNewCarLocation(c *gin.Context){
+func insertNewCar(c *gin.Context){
 
-	var car car;
-	c.BindJSON(&car)
+	var car = car{Car_id: c.Param("car_id")};
+	c.BindJSON(&car) // This parses the body param json into car
+	// car := c.Param("car_id") // This adds the missing ID
 
 	// Add this car to the DB
 
-	c.JSON(200, gin.H{"status": car.Status}) // Your custom response here
+	c.JSON(200, gin.H{"AddedCar": car}) // temporary for checking information
 
 }
+
+func getCarLocation(c *gin.Context){
+
+	id := c.Param("car_id")
+	example1 := car{Car_id: id, Location: "41.40338, 2.17403", Status: "Rented"}
+
+	// Fetch specific car from DB
+	
+	
+	c.JSON(200, gin.H{"code": 200, "message": example1.Location})
+
+}
+
+func updateCarLocation(c *gin.Context){
+	
+	var car = car{Car_id: c.Param("car_id")};
+	c.BindJSON(&car)
+	// id := c.Param("car_id") // This adds the missing ID
+
+
+	// Update specific entrance "id" with information in "car"
+
+
+	c.JSON(200, gin.H{"UpdatedCar": car}) // temporary for checking information
+
+}
+
+
+func getCarStatus(c *gin.Context){
+
+	id := c.Param("car_id")
+	example1 := car{Car_id: id, Location: "41.40338, 2.17403", Status: "Parked"}
+
+	// Fetch specific car from DB
+	
+	
+	c.JSON(200, gin.H{"code": 200, "message": example1.Status})
+
+}
+
+func updateCarStatus(c *gin.Context){
+	
+	var car = car{Car_id: c.Param("car_id")};
+	c.BindJSON(&car)
+	// id := c.Param("car_id") // This adds the missing ID
+
+
+	// Update specific entrance "id" with location in "car"
+
+
+	c.JSON(200, gin.H{"UpdatedCar": car}) // temporary for checking information
+
+}
+
+
+
+
