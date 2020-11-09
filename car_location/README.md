@@ -10,6 +10,14 @@
     "status"   : "Parked"
 }
 ```
+Example: 
+```bash
+curl --header "Content-Type: application/json" \
+  --request POST \
+  --data '{"location" : "41.40338, 2.17403", "status"   : "Parked"}' \
+  http://0.0.0.0:8080/car/AA-01-AA
+```
+
 
 
 `/car_location/{car_id} GET (specific car)`
@@ -30,5 +38,7 @@
 {
     "status"   : "Parked"
 }
+
+
 ```
 
