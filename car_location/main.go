@@ -51,35 +51,35 @@ func main() {
 	// }
 
 	// fmt.Printf("Created table")
-	fmt.Printf("TESTING DB\n")
+	// fmt.Printf("TESTING DB\n")
 	
 
 	// Test db
 
 	// _, err = db.Exec("INSERT INTO Cars (car_id, location, status) VALUES ('1342513', '40.3213, 32.3213', 'Rented');")
 
-	if err != nil {
-		panic(err)
-	}
+	// if err != nil {
+	// 	panic(err)
+	// }
 	
-	rows, err := db.Query("SELECT car_id, location, status FROM Cars")
-	if err != nil {
-		// handle this error better than this
-		panic(err)
-	}
-	defer rows.Close()
+	// rows, err := db.Query("SELECT car_id, location, status FROM Cars")
+	// if err != nil {
+	// 	// handle this error better than this
+	// 	panic(err)
+	// }
+	// defer rows.Close()
 	
-	for rows.Next() {
-		var id string
-		var location string
-		var status string
-		err = rows.Scan(&id, &location, &status)
-		if err != nil {
-		  // handle this error
-		  panic(err)
-		}
-		fmt.Println(id, location, status)
-	  }
+	// for rows.Next() {
+	// 	var id string
+	// 	var location string
+	// 	var status string
+	// 	err = rows.Scan(&id, &location, &status)
+	// 	if err != nil {
+	// 	  // handle this error
+	// 	  panic(err)
+	// 	}
+	// 	fmt.Println(id, location, status)
+	// }
 	
 
 
@@ -152,11 +152,7 @@ func getCarInformation(c *gin.Context){
 	car_locations = append(car_locations, example1)
 	car_locations = append(car_locations, example2)
 
-	c.JSON(200, gin.H{
-		"code" : 200,
-		// Returns array of corresponding cars using 
-		"message" : car_locations,
-	})
+	c.JSON(200, car_locations)
 
 }
 
