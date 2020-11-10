@@ -22,7 +22,7 @@ class MongoAPI:
         output = [{item: data[item] for item in data if item != '_id'} for data in documents]
         if len(output) == 0:
             car1 = {
-                "id": "AB-50-DF",
+                "id": "AA-01-AA",
                 "brand": "Opel",
                 "model": "Astra",
                 "kms": 0,
@@ -33,7 +33,7 @@ class MongoAPI:
                 "num_of_seats": 2
             }
             car2 = {
-                "id": "AB-50-AA",
+                "id": "GD-02-XA",
                 "brand": "Audi",
                 "model": "A3",
                 "kms": 0,
@@ -44,7 +44,7 @@ class MongoAPI:
                 "num_of_seats": 5
             }
             car3 = {
-                "id": "AB-50-DS",
+                "id": "LD-34-CV",
                 "brand": "Kia",
                 "model": "Ceed",
                 "kms": 0,
@@ -55,7 +55,7 @@ class MongoAPI:
                 "num_of_seats": 5
             }
             car4 = {
-                "id": "BB-50-BB",
+                "id": "RT-10-SA",
                 "brand": "Opel",
                 "model": "Corsa",
                 "kms": 0,
