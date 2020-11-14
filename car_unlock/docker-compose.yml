@@ -1,0 +1,23 @@
+version: '3.3'
+services:
+  api:
+    build: .
+    depends_on:
+      - sql_db
+    ports:
+      - "5673:5673"
+    links:
+      - sql_db
+  sql_db:
+    image: "mysql:latest"
+    environment:
+      MYSQL_DATABASE: "unlockDB"
+      MYSQL_USER: "car_unlock"
+      MYSQL_PASSWORD: "car_unlock"
+      MYSQL_ROOT_PASSWORD: "root"
+    ports:
+      - "3306:3306"
+    expose:
+      - "3306"
+    volumes:
+      - ./mysql-dump:/docker-entrypoint-initdb.d

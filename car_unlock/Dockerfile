@@ -1,14 +1,17 @@
 FROM golang:alpine
 
-WORKDIR /src
-COPY ./main.go .
+WORKDIR /src/
+COPY go.* /src/
+ADD controllers /src/controllers
+ADD main /src/main
+ADD mappings /src/mappings
 
 RUN apk update
 RUN apk add --no-cache git
 
 RUN go get -u github.com/gin-gonic/gin
-RUN go build -o main .
+RUN go get -u github.com/go-sql-driver/mysql
 
-EXPOSE 5673
+RUN go build -o mainApp ./main/main.go
 
-ENTRYPOINT ["./main"]
+ENTRYPOINT ["./mainApp"]
