@@ -10,12 +10,13 @@ RUN go get -u -x github.com/gin-gonic/gin
 RUN go get -u -x github.com/lib/pq
 WORKDIR /src/
 COPY main.go go.* /src/
-# RUN go get github.com/eclipse/paho.mqtt.golang
+ADD database /src/database
+ADD common /src/common
+RUN ls
 
-
-RUN CGO_ENABLED=0 go build -o /bin/demo
+RUN CGO_ENABLED=0 go build -o /bin/app
 
 FROM scratch
-COPY --from=build /bin/demo /bin/demo
-ENTRYPOINT ["/bin/demo"]
+COPY --from=build /bin/app /bin/app
+ENTRYPOINT ["/bin/app"]
 

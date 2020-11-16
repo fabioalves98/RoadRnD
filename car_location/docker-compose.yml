@@ -6,6 +6,10 @@ services:
       - postgres
     ports:
       - "5002:8080"
+    links:
+      - postgres
+
+
   postgres:
     image: "postgres:latest"
     environment:
