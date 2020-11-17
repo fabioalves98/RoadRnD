@@ -21,22 +21,39 @@ class Car {
   final String brand;
   final String model;
   final String id;
+  final String fuel_type;
+  final int kms;
+  final int num_of_seats;
+  final String owner;
+  final String year;
 
-  Car({this.brand, this.model, this.id});
+  Car(
+      {this.brand,
+      this.model,
+      this.id,
+      this.fuel_type,
+      this.kms,
+      this.num_of_seats,
+      this.owner,
+      this.year});
 
   factory Car.fromJson(Map<String, dynamic> json) {
     return Car(
-      brand: json['Brand'],
-      model: json['Model'],
-      id: json['Id'],
-    );
+        brand: json['Brand'],
+        model: json['Model'],
+        id: json['Id'],
+        fuel_type: json['FuelType'],
+        kms: json['Kms'],
+        num_of_seats: json['Num_of_seats'],
+        owner: json['Owner'],
+        year: json['RegistrationYear']);
   }
 }
 
 Future<List<Car>> fetchCars() async {
   print("Getting cars");
 
-  final response = await http.get('https://36fc9bc9d525.ngrok.io/cars');
+  final response = await http.get('https://thin-crab-21.loca.lt/cars');
 
   print(response.body);
 
@@ -70,32 +87,6 @@ class ListCars extends StatefulWidget {
 }
 
 class _ListCarsState extends State<ListCars> {
-  final _cars = <String>['Honda', 'Chevrolet', 'BMW'];
-  final _biggerFont = TextStyle(fontSize: 18.0);
-
-  Widget _buildSuggestions() {
-    return ListView.separated(
-      padding: EdgeInsets.all(16.0),
-      itemCount: 4,
-      itemBuilder: /*1*/ (context, index) {
-        return _buildRow(_cars[index]);
-      },
-      separatorBuilder: (BuildContext context, int index) => const Divider(),
-    );
-  }
-
-  Widget _buildRow(String pair) {
-    return ListTile(
-      title: Text(
-        pair,
-        style: _biggerFont,
-      ),
-      onTap: () {
-        print('Taped');
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -109,8 +100,89 @@ class _ListCarsState extends State<ListCars> {
                   children: cars
                       .map(
                         (Car car) => ListTile(
-                            title: Text(car.brand),
-                            subtitle: Text("${car.model}")),
+                          title: Text(car.brand),
+                          subtitle: Text("${car.model}"),
+                          onTap: () {
+                            print('Taped');
+                            Navigator.of(context).push(MaterialPageRoute<void>(
+                              builder: (BuildContext context) {
+                                return Scaffold(
+                                    appBar: AppBar(
+                                      title: Text('${car.brand} ${car.model}'),
+                                    ),
+                                    body: Container(
+                                        padding: const EdgeInsets.all(32),
+                                        child: Column(
+                                          children: [
+                                            Expanded(
+                                                child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                  Text(
+                                                    "ID - ${car.id}",
+                                                    style: TextStyle(
+                                                      fontSize: 25,
+                                                      color: Colors.black87,
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    "Fuel - ${car.fuel_type}",
+                                                    style: TextStyle(
+                                                      fontSize: 25,
+                                                      color: Colors.black87,
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    "Kms - ${car.kms}",
+                                                    style: TextStyle(
+                                                      fontSize: 25,
+                                                      color: Colors.black87,
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    "Seats - ${car.num_of_seats}",
+                                                    style: TextStyle(
+                                                      fontSize: 25,
+                                                      color: Colors.black87,
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    "Year - ${car.year}",
+                                                    style: TextStyle(
+                                                      fontSize: 25,
+                                                      color: Colors.black87,
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    "Owner - ${car.owner}",
+                                                    style: TextStyle(
+                                                      fontSize: 25,
+                                                      color: Colors.black87,
+                                                    ),
+                                                  )
+                                                ])),
+                                            OutlineButton(
+                                              textColor: Color(0xFF6200EE),
+                                              highlightedBorderColor: Colors
+                                                  .black
+                                                  .withOpacity(0.12),
+                                              onPressed: () {
+                                                // Respond to button press
+                                              },
+                                              child: Text("Unlock",
+                                                  style: TextStyle(
+                                                    fontSize: 25,
+                                                    color: Colors.black87,
+                                                  )),
+                                            )
+                                          ],
+                                        )));
+                              }, // ..
+                            ));
+                          },
+                        ),
                       )
                       .toList(),
                 );
