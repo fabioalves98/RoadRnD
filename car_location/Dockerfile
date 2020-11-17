@@ -8,11 +8,12 @@ RUN apt-get upgrade -y
 
 RUN go get -u -x github.com/gin-gonic/gin
 RUN go get -u -x github.com/lib/pq
+RUN go get -u -x github.com/cridenour/go-postgis
+RUN go get -u github.com/paulmach/orb/encoding/wkb
 WORKDIR /src/
 COPY main.go go.* /src/
 ADD database /src/database
 ADD common /src/common
-RUN ls
 
 RUN CGO_ENABLED=0 go build -o /bin/app
 

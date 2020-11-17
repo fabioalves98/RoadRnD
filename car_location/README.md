@@ -1,7 +1,14 @@
 ## Endpoints
 
 
-`/car GET (All cars)`
+`/car GET (All cars or only cars in certain location) Body params`
+```javascript
+{
+    "location" : "41.40338, 32.17403" // Not required but if inserted, looks for cars in that area
+    "radius"   : 30                   // type? units, not sure. Only used if location is set
+}
+```
+
 
 `/car/{car_id} POST (Body params)` 
 ```javascript

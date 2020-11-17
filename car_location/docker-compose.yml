@@ -11,7 +11,8 @@ services:
 
 
   postgres:
-    image: "postgres:latest"
+    # image: "postgres:latest"
+    image: "postgis/postgis:latest"
     environment:
       POSTGRES_DB: "db"
       POSTGRES_USER: "db"

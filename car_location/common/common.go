@@ -12,6 +12,11 @@ type CarLocation struct{
 	Status 		string `json:"status"`
 }
 
+type Location struct{
+	Coords 	string `json:"location"`
+	Radius  int    `json:"radius"`
+}
+
 
 func Check(err error, msg string) bool{
 	if err != nil {

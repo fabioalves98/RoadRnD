@@ -16,6 +16,8 @@ func main() {
 
 	fmt.Printf("Current values in database FROM MAIN\n")
 	
+	// database.ClearDB()
+	// database.InsertDummyDB()
 	database.TestDB()
 
 	// TODO: Add search by location. Add Delete methods
@@ -37,8 +39,21 @@ func main() {
 
 
 func getCarInformation(c *gin.Context){
+	
+	var loc = common.Location{}
+	c.BindJSON(&loc)
+	car_locations := []common.CarLocation{}
+	// if loc.Coords != ""
+	if loc.Coords == ""{
+		car_locations = database.SelectAll()
+	}else{
+		car_locations = database.SelectFromLocation(loc.Coords, loc.Radius)
+		if len(car_locations) == 0 {
+			c.JSON(200, "No cars around the provided location. Try increasing search radius!")
+			return
+		}
+	}
 
-	car_locations := database.SelectAll()
 
 	c.JSON(200, car_locations)
 
