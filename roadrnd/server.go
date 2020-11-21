@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"io/ioutil"
 	"log"
@@ -30,7 +31,8 @@ type CarLocation struct {
 
 func main() {
 	r := gin.Default()
-	r.GET("/cars", func(c *gin.Context) {
+
+	r.GET("/list", func(c *gin.Context) {
 
 		// Get Car location from Car Location
 		resp, err := http.Get("http://172.18.0.1:5002/car")
@@ -44,7 +46,8 @@ func main() {
 
 		// Convert to CarLocation Structure
 		var loc []CarLocation
-		json.Unmarshal([]byte(body), &loc)
+		err = json.Unmarshal([]byte(body), &loc)
+
 		if err != nil {
 			log.Println("Error Parsing Location JSON data - ", err)
 		}
@@ -52,12 +55,16 @@ func main() {
 		pretty_loc, err := json.MarshalIndent(loc, "", "    ")
 		log.Println(string(pretty_loc))
 
+		c.JSON(200, loc)
+	})
+
+	r.GET("/cars", func(c *gin.Context) {
 		// Get Cars from Car Inventory
-		resp, err = http.Get("http://172.18.0.1:5001/car")
+		resp, err := http.Get("http://172.18.0.1:5001/car")
 		if err != nil {
 			log.Fatalln(err)
 		}
-		body, err = ioutil.ReadAll(resp.Body)
+		body, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
 			log.Fatalln(err)
 		}
@@ -74,6 +81,46 @@ func main() {
 		log.Println(string(pretty_inv))
 
 		c.JSON(200, cars)
+	})
+
+	r.GET("/unlock/:car_id", func(c *gin.Context) {
+		// Call Unlock Service to Unlock a certain Car
+		values := map[string]string{"id": c.Param("car_id"), "tag": "tag1"}
+
+		json_values, _ := json.Marshal(values)
+
+		resp, err := http.Post("http://172.18.0.1:5003/unlock", "application/json", bytes.NewBuffer(json_values))
+		if err != nil {
+			log.Fatalln(err)
+		}
+		body, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			log.Fatalln(err)
+		}
+
+		log.Println(body)
+
+		c.String(http.StatusOK, "Car Unlocked")
+	})
+
+	r.GET("/lock/:car_id", func(c *gin.Context) {
+		// Call Unlock Service to Unlock a certain Car
+		values := map[string]string{"id": c.Param("car_id"), "tag": "tag1"}
+
+		json_values, _ := json.Marshal(values)
+
+		resp, err := http.Post("http://172.18.0.1:5003/lock", "application/json", bytes.NewBuffer(json_values))
+		if err != nil {
+			log.Fatalln(err)
+		}
+		body, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			log.Fatalln(err)
+		}
+
+		log.Println(body)
+
+		c.String(http.StatusOK, "Car Unlocked")
 	})
 
 	r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")

@@ -1,19 +1,19 @@
 version: '3.3'
 
 services:
-  reverse-proxy:
-    # The official v2 Traefik docker image
-    image: traefik:v2.3
-    # Enables the web UI and tells Traefik to listen to docker
-    command: --api.insecure=true --providers.docker
-    ports:
-      # The HTTP port
-      - "80:80"
-      # The Web UI (enabled by --api.insecure=true)
-      - "8080:8080"
-    volumes:
-      # So that Traefik can listen to the Docker events
-      - /var/run/docker.sock:/var/run/docker.sock
+  # reverse-proxy:
+  #   # The official v2 Traefik docker image
+  #   image: traefik:v2.3
+  #   # Enables the web UI and tells Traefik to listen to docker
+  #   command: --api.insecure=true --providers.docker
+  #   ports:
+  #     # The HTTP port
+  #     - "80:80"
+  #     # The Web UI (enabled by --api.insecure=true)
+  #     - "8080:8080"
+  #   volumes:
+  #     # So that Traefik can listen to the Docker events
+  #     - /var/run/docker.sock:/var/run/docker.sock
 
   # Databases
   # Postgis
@@ -50,6 +50,12 @@ services:
       - "27017:27017"
 
   # Microservices
+  # Compositor  
+  roadrnd:
+    build: ./roadrnd/.
+    ports:
+      - "5000:8080"
+
   # Car inventory
   car_inventory_api:
     build: ./car_inventory/.
@@ -58,16 +64,6 @@ services:
     ports:
       - "5001:5001"
 
-  # Car unlock
-  car_unlock_api:
-    build: ./car_unlock/.
-    depends_on:
-      - sql_db
-    ports:
-      - "5673:5673"
-    links:
-      - sql_db
-  
   # Car location
   car_location_api:
     build: ./car_location/.
@@ -78,9 +74,13 @@ services:
       - "5002:5002"
     links:
       - postgres
-  
-  # Compositor  
-  roadrnd:
-    build: ./roadrnd/.
+
+  # Car unlock
+  car_unlock_api:
+    build: ./car_unlock/.
+    depends_on:
+      - sql_db
     ports:
-      - "5000:8080"
+      - "5003:5673"
+    links:
+      - sql_db

@@ -1,10 +1,7 @@
 FROM golang:alpine AS build
-# # FROM micro/micro:latest AS build
 
 USER root
 
-# RUN apt-get update
-# RUN apt-get upgrade -y
 RUN apk update
 RUN apk add --no-cache git
 

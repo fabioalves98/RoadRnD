@@ -2,10 +2,9 @@ FROM golang:alpine
 
 USER root
 
-# RUN apt-get update
-# RUN apt-get upgrade -y
+
 RUN apk update
-RUN apk add --no-cache git
+RUN apk add --no-cache git bash
 
 RUN go get -u github.com/gin-gonic/gin
 
