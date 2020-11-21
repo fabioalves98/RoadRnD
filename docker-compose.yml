@@ -1,0 +1,86 @@
+version: '3.3'
+
+services:
+  reverse-proxy:
+    # The official v2 Traefik docker image
+    image: traefik:v2.3
+    # Enables the web UI and tells Traefik to listen to docker
+    command: --api.insecure=true --providers.docker
+    ports:
+      # The HTTP port
+      - "80:80"
+      # The Web UI (enabled by --api.insecure=true)
+      - "8080:8080"
+    volumes:
+      # So that Traefik can listen to the Docker events
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  # Databases
+  # Postgis
+  postgres:
+    # image: "postgres:latest"
+    image: "postgis/postgis:latest"
+    environment:
+      POSTGRES_DB: "db"
+      POSTGRES_USER: "db"
+      POSTGRES_PASSWORD: "db_pass"
+      POSTGRES_HOST: "composepostgres"
+    ports:
+      - "5432:5432"
+
+  # SQL
+  sql_db:
+    image: "mysql:latest"
+    environment:
+      MYSQL_DATABASE: "unlockDB"
+      MYSQL_USER: "car_unlock"
+      MYSQL_PASSWORD: "car_unlock"
+      MYSQL_ROOT_PASSWORD: "root"
+    ports:
+      - "3306:3306"
+    expose:
+      - "3306"
+    volumes:
+      - ./car_unlock/mysql-dump:/docker-entrypoint-initdb.d
+
+  # Mongo
+  mymongo_1:
+    image: "mongo"
+    ports:
+      - "27017:27017"
+
+  # Microservices
+  # Car inventory
+  car_inventory_api:
+    build: ./car_inventory/.
+    depends_on: 
+      - mymongo_1
+    ports:
+      - "5001:5001"
+
+  # Car unlock
+  car_unlock_api:
+    build: ./car_unlock/.
+    depends_on:
+      - sql_db
+    ports:
+      - "5673:5673"
+    links:
+      - sql_db
+  
+  # Car location
+  car_location_api:
+    build: ./car_location/.
+    restart: on-failure
+    depends_on:
+      - postgres
+    ports:
+      - "5002:5002"
+    links:
+      - postgres
+  
+  # Compositor  
+  roadrnd:
+    build: ./roadrnd/.
+    ports:
+      - "5000:8080"

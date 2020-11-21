@@ -1,10 +1,12 @@
-FROM golang:latest AS build
+FROM golang:alpine AS build
 # # FROM micro/micro:latest AS build
 
 USER root
 
-RUN apt-get update
-RUN apt-get upgrade -y
+# RUN apt-get update
+# RUN apt-get upgrade -y
+RUN apk update
+RUN apk add --no-cache git
 
 RUN go get -u -x github.com/gin-gonic/gin
 RUN go get -u -x github.com/lib/pq

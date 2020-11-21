@@ -34,7 +34,7 @@ func main() {
 	r.PUT("/car_status/:car_id", updateCarStatus)
 
 
-	r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
+	r.Run(":5002") // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 }
 
 

@@ -1,5 +1,7 @@
 FROM golang:alpine
 
+USER root
+
 WORKDIR /src/
 COPY go.* /src/
 ADD controllers /src/controllers

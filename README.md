@@ -1,6 +1,8 @@
 # RoadRnD
 Platform for car sharing
 
+# Run all
+docker-compose up --build
 
 # Matriculas	Tags NFC
 1. "AA-01-AA"	"tag1"

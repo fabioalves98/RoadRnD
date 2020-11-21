@@ -2,7 +2,8 @@
 Microservice using nfc tags to unlock a car using it's license plate as ID.
 
 ## HOW TO RUN
-Run "docker-compose up"
+docker-compose build
+docker-compose up
 
 [Link to API](https://app.swaggerhub.com/apis-docs/MSilva98/CarUnlock/1.0.0)
 
