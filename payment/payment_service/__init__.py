@@ -12,6 +12,6 @@ def getAppContext():
 
     # db.init_app(app)
     
-    app.register_blueprint(views.test)
+    app.register_blueprint(views.payment)
 
     return app

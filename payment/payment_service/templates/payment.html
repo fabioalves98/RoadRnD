@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>Payment information </title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<style>
+		body {
+			line-height: 1.7em;
+			color: #000;
+			background-color: #ddd;
+			font-family: "Helvetica Neue", helvetica, arial, sans-serif;
+			text-shadow: 1px 1px 16px rgba(255, 255, 255, 0.8);
+			font-size: 34px;
+			text-align: center;
+			margin-top: 85px;
+		}
+		h1, h2, h3, h4, h5, h6, label { color: #fff; }
+		h1 { text-transform: uppercase; }
+		#countdown { line-height: 1.1em; }
+	</style>
+</head>
+
+<body>
+	<div class="pure-g">
+		<div class="pure-u-1">
+			<h1>Stay tuned</h1>
+            <h2>something new is coming here</h2>
+            {% if payment_info.total is defined %}
+                <h3>{{ payment_info.total }} {{ payment_info.currency }} and also {{ payment_info.id }}</h3>
+            {% else %}
+                <h3> Nothing to approve. Call /execute with some stuff.</h3>
+            {% endif %}
+		</div>
+	</div>
+</body>

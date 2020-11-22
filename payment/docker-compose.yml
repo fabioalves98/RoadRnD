@@ -3,7 +3,7 @@ services:
   api:
     build: .
     ports:
-      - "5005:5000"
+      - "5006:5000"
 
   # postgres:
   #   image: "postgres:latest"
