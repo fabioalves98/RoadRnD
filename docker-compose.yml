@@ -18,7 +18,6 @@ services:
   # Databases
   # Postgis
   postgres:
-    # image: "postgres:latest"
     image: "postgis/postgis:latest"
     environment:
       POSTGRES_DB: "db"
@@ -84,3 +83,9 @@ services:
       - "5003:5673"
     links:
       - sql_db
+
+  # Payment
+  payment_api:
+    build: ./payment/.
+    ports:
+      - "5006:5000"
