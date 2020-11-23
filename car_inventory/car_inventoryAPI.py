@@ -30,7 +30,8 @@ class MongoAPI:
                 "fuelType": "gasoline",
                 "owner": "Homer Simpson",
                 "photo" : "",
-                "num_of_seats": 2
+                "num_of_seats": 2,
+                "price_per_minute": 5
             }
             car2 = {
                 "id": "GD-02-XA",
@@ -41,7 +42,8 @@ class MongoAPI:
                 "fuelType": "diesel",
                 "owner": "Homer Simpson",
                 "photo" : "",
-                "num_of_seats": 5
+                "num_of_seats": 5,
+                "price_per_minute": 6
             }
             car3 = {
                 "id": "LD-34-CV",
@@ -52,7 +54,8 @@ class MongoAPI:
                 "fuelType": "gasoline",
                 "owner": "Homer Simpson",
                 "photo" : "",
-                "num_of_seats": 5
+                "num_of_seats": 5,
+                "price_per_minute": 3
             }
             car4 = {
                 "id": "RT-10-SA",
@@ -63,7 +66,8 @@ class MongoAPI:
                 "fuelType": "gasoline",
                 "owner": "Homer Simpson",
                 "photo" : "",
-                "num_of_seats": 7
+                "num_of_seats": 7,
+                "price_per_minute": 10
             }
             self.collection.insert_many([car1, car2, car3, car4])
 

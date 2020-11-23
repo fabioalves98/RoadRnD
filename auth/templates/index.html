@@ -1,0 +1,101 @@
+<html>
+  <style>
+    .center {
+  position: absolute;
+  width: 300px;
+  height: 200px;
+  z-index: 15;
+  top: 50%;
+  left: 50%;
+  margin: -100px 0 0 -150px;
+  /* text-align: center;
+  display: flex; */
+  justify-content: center;
+}
+  </style>
+<head>
+  <meta name="google-signin-client_id" content="684722782791-h4bqdars1o0b12dvbelftgcj8c2ntc1r.apps.googleusercontent.com">
+</head>
+<body>
+    
+  <div class = "center">
+      <h1 style="text-align: center;">LOGIN</h1>
+      <div style="align-items: center;" id="my-signin2"></div>
+      <br>
+      <div class="fb-login-button" data-size="large" data-button-type="login_with" data-layout="default" data-auto-logout-link="false" data-use-continue-as="false" data-width="" onlogin="checkLoginState();"></div>
+  </div>
+
+    
+
+
+<script>
+    window.fbAsyncInit = function() {
+      FB.init({
+        appId      : '1098648793929511',
+        cookie     : true,
+        xfbml      : true,
+        version    : 'v9.0'
+      });
+        
+      FB.AppEvents.logPageView();   
+        
+    };
+  
+    (function(d, s, id){
+       var js, fjs = d.getElementsByTagName(s)[0];
+       if (d.getElementById(id)) {return;}
+       js = d.createElement(s); js.id = id;
+       js.src = "https://connect.facebook.net/en_US/sdk.js";
+       fjs.parentNode.insertBefore(js, fjs);
+     }(document, 'script', 'facebook-jssdk'));
+
+
+    //  FB.getLoginStatus(function(response) {
+    //     statusChangeCallback(response);
+    //     console.log('Login status facebook: ' + response);
+    // });
+
+
+    function checkLoginState() {
+    FB.getLoginStatus(function(response) {
+        statusChangeCallback(response);
+        console.log('Login status facebook: ' + response);
+    });
+    }
+
+    function statusChangeCallback(response) {  // Called with the results from FB.getLoginStatus().
+    console.log('statusChangeCallback');
+    console.log(response);                   // The current login status of the person.
+    if (response.status === 'connected') {   // Logged into your webpage and Facebook.
+    //   testAPI();  
+    } else {                                 // Not logged into your webpage or we are unable to tell.
+      document.getElementById('status').innerHTML = 'Please log ' +
+        'into this webpage.';
+    }
+  }
+
+  </script>
+
+  <script>
+    function onSuccess(googleUser) {
+      console.log('Logged in as: ' + googleUser.getBasicProfile().getName());
+    }
+    function onFailure(error) {
+      console.log(error);
+    }
+    function renderButton() {
+      gapi.signin2.render('my-signin2', {
+        'scope': 'profile email',
+        'width': 240,
+        'height': 50,
+        'longtitle': true,
+        'theme': 'dark',
+        'onsuccess': onSuccess,
+        'onfailure': onFailure
+      });
+    }
+  </script>
+
+  <script src="https://apis.google.com/js/platform.js?onload=renderButton" async defer></script>
+</body>
+</html>

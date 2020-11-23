@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<title>Payment information </title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+	<script type="module" src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.esm.js"></script>
+	<script nomodule src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.js"></script>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ionic/core/css/ionic.bundle.css" />
+
+	<!-- <link rel="preconnect" href="https://fonts.gstatic.com"> -->
+	<!-- <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">  -->
+
+	<style>
+		:root {
+			--ion-safe-area-top: 20px;
+			--ion-safe-area-bottom: 22px;
+		}
+
+		.item-name {
+			font-family: 'Roboto', sans-serif;
+		}
+
+		.total-price {
+			font-size: 20px !important;
+			font-weight: "bold" !important;
+		}
+
+		.price {
+			font-size: 14px;
+		}
+
+		.item-list-title {
+			font-family: 'Roboto', sans-serif;
+			font-size: 18px;
+			text-align: center;
+		}
+	</style>
+
+</head>
+
+<body>
+
+
+	<ion-app>
+		<ion-header>
+			<ion-toolbar color="primary" mode="ios">
+				<ion-title> Sale </ion-title>
+			</ion-toolbar>
+		</ion-header>
+		{% if payment_info.total is defined %}
+
+		<ion-content>
+
+			<ion-list-header mode="ios">
+				<ion-label>Sale item list</ion-label>
+			</ion-list-header>
+
+
+			<ion-list>
+				{% for item in payment_info.item_list %}
+				<ion-item>
+					<ion-label>
+						<h2 class="item-name">{{ item.item_name }} </h2>
+					</ion-label>
+
+					<ion-note slot="end" color="medium" class="price">
+						<p> {{ item.item_price }} {{ '€' if payment_info.currency == "EUR" else '$'}} </p>
+					</ion-note>
+				</ion-item>
+				{% endfor %}
+			</ion-list>
+		</ion-content>
+
+
+		<div style="position: absolute; bottom: 0px; width: 100%">
+			<ion-card>
+				<ion-item>
+					<ion-label>
+						<h2>Sale total</h2>
+					</ion-label>
+				</ion-item>
+
+				<ion-card-content>
+					<ion-list>
+						<ion-item>
+							<ion-label>
+								<h2> Sub-Total </h2>
+							</ion-label>
+
+							<ion-note slot="end" color="medium" class="price">
+								{{ '%0.2f'|format((payment_info.total|float - payment_info.total_tax|float)|float) }}
+								{{ '€' if payment_info.currency == "EUR" else '$'}}
+							</ion-note>
+						</ion-item>
+
+						<ion-item>
+							<ion-label>
+								<h2> Tax </h2>
+							</ion-label>
+
+							<ion-note slot="end" color="medium" class="price">
+								{{ '%0.2f'|format(payment_info.total_tax|float) }}
+								{{ '€' if payment_info.currency == "EUR" else '$'}}
+							</ion-note>
+						</ion-item>
+
+						<ion-item>
+							<ion-label>
+								<h2 > Total </h2>
+								<p>{{ payment_info.item_list|length }} Items </p>
+							</ion-label>
+
+							<ion-note class="total-price" slot="end" color="medium">
+								{{ payment_info.total }} {{ '€' if payment_info.currency == "EUR" else '$'}}
+							</ion-note>
+						</ion-item>
+					</ion-list>
+				</ion-card-content>
+			</ion-card>
+
+
+			<ion-row>
+				<ion-col size="3">
+					<ion-button color="danger" expand="full"> Cancel </ion-button>
+				</ion-col>
+				<ion-col size="9">
+					<ion-button expand="full"> Proceed </ion-button>
+				</ion-col>
+			</ion-row>
+
+		</div>
+		{% else %}
+		<h1>NOTHING TO DISPlAY. YOU SHOUDLNT BE HERE</h1>
+		{% endif %}
+	</ion-app>
+</body>
+
+
+
+</body>

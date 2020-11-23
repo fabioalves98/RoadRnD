@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'dart:async';
 
 void main() => runApp(MyApp());
 
@@ -10,8 +11,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'RoadRnD',
       theme: ThemeData(
-        primaryColor: Colors.white,
-      ),
+          primaryColor: Colors.white,
+          textTheme: TextTheme(
+            bodyText1: TextStyle(fontSize: 25.0, color: Colors.black),
+          )),
       home: ListCars(),
     );
   }
@@ -53,7 +56,7 @@ class Car {
 Future<List<Car>> fetchCars() async {
   print("Getting cars");
 
-  final response = await http.get('https://thin-crab-21.loca.lt/cars');
+  final response = await http.get('https://popular-donkey-97.loca.lt/cars');
 
   print(response.body);
 
@@ -87,6 +90,68 @@ class ListCars extends StatefulWidget {
 }
 
 class _ListCarsState extends State<ListCars> {
+  void updatePrice() {
+    print(DateTime.now());
+  }
+
+  void goToCar(BuildContext context, Car car) {
+    Navigator.of(context).push(MaterialPageRoute<void>(
+      builder: (BuildContext context) {
+        return Scaffold(
+            appBar: AppBar(
+              title: Text('${car.brand} ${car.model}'),
+            ),
+            body: Container(
+                padding: const EdgeInsets.all(32),
+                child: Column(
+                  children: [
+                    Expanded(
+                        child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                          Text(
+                            "ID - ${car.id}",
+                            style: Theme.of(context).textTheme.bodyText1,
+                          ),
+                          Text(
+                            "Fuel - ${car.fuel_type}",
+                            style: Theme.of(context).textTheme.bodyText1,
+                          ),
+                          Text(
+                            "Kms - ${car.kms}",
+                            style: Theme.of(context).textTheme.bodyText1,
+                          ),
+                          Text(
+                            "Seats - ${car.num_of_seats}",
+                            style: Theme.of(context).textTheme.bodyText1,
+                          ),
+                          Text(
+                            "Year - ${car.year}",
+                            style: Theme.of(context).textTheme.bodyText1,
+                          ),
+                          Text(
+                            "Owner - ${car.owner}",
+                            style: Theme.of(context).textTheme.bodyText1,
+                          )
+                        ])),
+                    OutlineButton(
+                        textColor: Color(0xFF6200EE),
+                        highlightedBorderColor: Colors.black.withOpacity(0.12),
+                        onPressed: () {
+                          print('Unlock Car - ${car.id}');
+                          Timer.periodic(Duration(milliseconds: 500),
+                              (Timer t) => updatePrice());
+                        },
+                        child: Text(
+                          "Unlock",
+                          style: Theme.of(context).textTheme.bodyText1,
+                        ))
+                  ],
+                )));
+      }, // ..
+    ));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -104,83 +169,7 @@ class _ListCarsState extends State<ListCars> {
                           subtitle: Text("${car.model}"),
                           onTap: () {
                             print('Taped');
-                            Navigator.of(context).push(MaterialPageRoute<void>(
-                              builder: (BuildContext context) {
-                                return Scaffold(
-                                    appBar: AppBar(
-                                      title: Text('${car.brand} ${car.model}'),
-                                    ),
-                                    body: Container(
-                                        padding: const EdgeInsets.all(32),
-                                        child: Column(
-                                          children: [
-                                            Expanded(
-                                                child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                  Text(
-                                                    "ID - ${car.id}",
-                                                    style: TextStyle(
-                                                      fontSize: 25,
-                                                      color: Colors.black87,
-                                                    ),
-                                                  ),
-                                                  Text(
-                                                    "Fuel - ${car.fuel_type}",
-                                                    style: TextStyle(
-                                                      fontSize: 25,
-                                                      color: Colors.black87,
-                                                    ),
-                                                  ),
-                                                  Text(
-                                                    "Kms - ${car.kms}",
-                                                    style: TextStyle(
-                                                      fontSize: 25,
-                                                      color: Colors.black87,
-                                                    ),
-                                                  ),
-                                                  Text(
-                                                    "Seats - ${car.num_of_seats}",
-                                                    style: TextStyle(
-                                                      fontSize: 25,
-                                                      color: Colors.black87,
-                                                    ),
-                                                  ),
-                                                  Text(
-                                                    "Year - ${car.year}",
-                                                    style: TextStyle(
-                                                      fontSize: 25,
-                                                      color: Colors.black87,
-                                                    ),
-                                                  ),
-                                                  Text(
-                                                    "Owner - ${car.owner}",
-                                                    style: TextStyle(
-                                                      fontSize: 25,
-                                                      color: Colors.black87,
-                                                    ),
-                                                  )
-                                                ])),
-                                            OutlineButton(
-                                              textColor: Color(0xFF6200EE),
-                                              highlightedBorderColor: Colors
-                                                  .black
-                                                  .withOpacity(0.12),
-                                              onPressed: () {
-                                                // Respond to button press
-                                              },
-                                              child: Text("Unlock",
-                                                  style: TextStyle(
-                                                    fontSize: 25,
-                                                    color: Colors.black87,
-                                                  )),
-                                            )
-                                          ],
-                                        )));
-                              }, // ..
-                            ));
+                            goToCar(context, car);
                           },
                         ),
                       )

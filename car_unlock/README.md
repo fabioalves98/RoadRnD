@@ -9,17 +9,17 @@ docker-compose up
 
 ```properties
 # POST command to unlock car:
-curl -i -X POST http://localhost:5673/unlock -H "Accept: application/json" "Content-Type: application/json" -d '{"id":"AA-01-AA", "tag":"tag1"}'
+curl -i -X POST http://localhost:5003/unlock -H "Accept: application/json" "Content-Type: application/json" -d '{"id":"AA-01-AA", "tag":"tag1"}'
 
 # POST command to lock car:
-curl -i -X POST http://localhost:5673/lock -H "Accept: application/json" "Content-Type: application/json" -d '{"id":"AA-01-AA", "tag":"tag1"}'
+curl -i -X POST http://localhost:5003/lock -H "Accept: application/json" "Content-Type: application/json" -d '{"id":"AA-01-AA", "tag":"tag1"}'
 
 # POST command to add car:
-curl -i -X POST http://localhost:5673/add -H "Accept: application/json" "Content-Type: application/json" -d '{"id":"CD-55-23", "tag": "tagX"}'
+curl -i -X POST http://localhost:5003/add -H "Accept: application/json" "Content-Type: application/json" -d '{"id":"CD-55-23", "tag": "tagX"}'
 
 # POST command to update car tag:
-curl -i -X POST http://localhost:5673/updateTag -H "Accept: application/json" "Content-Type: application/json" -d '{"id":"CD-55-23", "tag": "tagV2"}'
+curl -i -X POST http://localhost:5003/updateTag -H "Accept: application/json" "Content-Type: application/json" -d '{"id":"CD-55-23", "tag": "tagV2"}'
 
 # POST command to delete car:
-curl -i -X POST http://localhost:5673/delete -H "Accept: application/json" "Content-Type: application/json" -d '{"id":"CD-55-23"}'
+curl -i -X POST http://localhost:5003/delete -H "Accept: application/json" "Content-Type: application/json" -d '{"id":"CD-55-23"}'
 ```
