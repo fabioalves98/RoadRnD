@@ -31,20 +31,35 @@ def create_payment():
     # return redirect(url_for("/approve"), payment_info=temporary_payment_object)
     return Response(status=200)
 
-@payment.route('/approve')
-def display_payment_page():
+@payment.route('/approve/<payment_id>')
+def display_payment_page(payment_id):
+
+    # Fetch the payment object from DB
+
+    # Check if that exists
+    # Dummy for now
+    try:
+        pid = temporary_payment_object["id"]
+    except Exception:
+        return Response(response=json.dumps({"Error" : "<payment_id> provided doesn't exist!"}), status=500, mimetype='application/json')
+ 
 
     return render_template("payment.html", payment_info=temporary_payment_object)
 
 
-@payment.route('/execute')
+@payment.route('/execute', methods=['POST'])
 def execute_payment():
     body_params = request.json
     try:
-        payment_id = body_params["payment_id"]
+        # payment_id = body_params["payment_id"]
         # And also credit card data or access token or something?
+        print(body_params, flush=True)
+        
     except Exception:
         return Response(response=json.dumps({"Error" : "Possibly wrong params"}), status=500, mimetype='application/json')
+
+    # temp dummy
+    payment_id = temporary_payment_object["id"]
 
 
     return Response(response=json.dumps({"OK" : "Payment executed and approved", "payment_id": payment_id}), status=200, mimetype='application/json')
