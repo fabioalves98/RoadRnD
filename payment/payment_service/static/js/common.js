@@ -9,11 +9,11 @@ async function presentPaymentChoicePopup() {
     alert.header = 'Choose the payment method';
     alert.buttons = [
         {
-            text: 'Roadnd Funds',
+            text: 'RoadRnd Funds',
             // cssClass: 'secondary',
             handler: () => {
                 // go through
-                presentFinalPopup();
+                gotDataFunds();
             }
         }, {
             text: 'MasterCard',
@@ -98,23 +98,58 @@ function presentFinalPopup() {
     return alert.present();
 }
 
+function presentErrorPopup() {
+    const alert = document.createElement('ion-alert');
+    alert.setAttribute('mode', 'ios');
+    alert.header = 'Something went wrong, please try again.';
+    alert.subHeader = 'An error occured during the payment. Please try again later or contact us for more information!';
+    // alert.message = 'This is an alert message.';
+    alert.buttons = ['Confirm'];
+
+    document.body.appendChild(alert);
+    return alert.present();
+}
+
 
 function gotData(data) {
     var xhr = new XMLHttpRequest();
+    var pay_id_url = window.location.pathname.split("/");
+    var payment_id = pay_id_url.pop() || pay_id_url.pop()
+    data.payment_id = payment_id;
     var data_json = JSON.stringify(data);
-    // TODO: Add payment id to the json here
     xhr.open("POST", '/execute', true);
 
-    // Envia a informação do cabeçalho junto com a requisição.
     xhr.setRequestHeader("Content-Type", "application/json");
 
-    xhr.onreadystatechange = function () { // Chama a função quando o estado mudar.
+    xhr.onreadystatechange = function () { 
         if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
-            // Requisição finalizada. Faça o processamento aqui.
             presentFinalPopup();
-
+        }else if(this.readyState === XMLHttpRequest.DONE && this.status === 500){
+            presentErrorPopup();
         }
     }
     xhr.send(data_json);
 }
+
+function gotDataFunds() {
+    var xhr = new XMLHttpRequest();
+    var pay_id_url = window.location.pathname.split("/");
+    var payment_id = pay_id_url.pop() || pay_id_url.pop()
+    var data = {access_token: "xx", payment_id: payment_id }
+    var data_json = JSON.stringify(data);
+    console.log(data_json)
+    xhr.open("POST", '/execute', true);
+
+    xhr.setRequestHeader("Content-Type", "application/json");
+
+    xhr.onreadystatechange = function () { 
+        if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+            presentFinalPopup();
+        }else{
+            presentErrorPopup();
+        }
+    }
+    xhr.send(data_json);
+}
+
 

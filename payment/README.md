@@ -4,17 +4,18 @@
 `/create POST e.g. Body params`
 ```javascript
 {
+    "client_id" : "AA-01-AA", // The id used by car_inventory service or the car plate nr
     "transaction"   : {
         "total" : "24.90",
         "currency" : "USD"  // or others like EUR
     },
     "item_list" : [
         {
-            "item_name" : "Car rental",
+            "item_name" : "Rental",
             "item_price" : "12.90",
         },
         {
-            "item_name" : "Other car rental",
+            "item_name" : "Rental",
             "item_price" : "15.30",
         }
     ]
@@ -22,17 +23,15 @@
 ```
 ### Example
 ```bash
-curl --header "Content-Type: application/json"   --request GET   --data '{"transaction" : {"total" : "24.90", "currency": "USD"}, "invoice_number" : "8394839284", "item_list" : [{"item_name": "Car Rental", "item_price" : "12.90"}, {"item_name": "Car Rental", "item_price" : "12.00"}]}'   http://0.0.0.0:5006/create
+curl --header "Content-Type: application/json"   --request GET   --data '{"client_id": "LD-34-CV", "transaction" : {"total" : "24.90", "currency": "USD"}, "invoice_number" : "8394839284", "item_list" : [{"item_name": "Rental", "item_price" : "12.90"}, {"item_name": "Rental", "item_price" : "12.00"}]}'   http://0.0.0.0:5006/create
 ```
 
-#### Returns
-```javascript
-{
-    "id": "PAYMENT-BDSk84729DHDSA7JDG6",
-    "create_time": "2020-11-02T19:32:10",
-    "update_time": "2020-11-02T19:32:10",
-    "state": "created"
-}
+## Approve payment
+When the /create endpoint is called the user is automatically redirected to /approve/<payment_id>
+### Example
+```bash
+# In a browser:
+0.0.0.0:5006/approve/PAYMENT-BDSk84729DHDSA7JDG6
 ```
 
 ## Execute the payment
