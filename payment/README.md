@@ -23,7 +23,7 @@
 ```
 ### Example
 ```bash
-curl --header "Content-Type: application/json"   --request GET   --data '{"client_id": "LD-34-CV", "transaction" : {"total" : "24.90", "currency": "USD"}, "invoice_number" : "8394839284", "item_list" : [{"item_name": "Rental", "item_price" : "12.90"}, {"item_name": "Rental", "item_price" : "12.00"}]}'   http://0.0.0.0:5006/create
+curl --header "Content-Type: application/json"   --request GET   --data '{"client_id": "LD-34-CV", "transaction" : {"total" : "24.90", "currency": "EUR"}, "invoice_number" : "8394839284", "item_list" : [{"item_name": "Rental", "item_price" : "12.90"}, {"item_name": "Rental", "item_price" : "12.00"}]}'   http://0.0.0.0:5006/create
 ```
 
 ## Approve payment

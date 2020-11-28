@@ -83,14 +83,51 @@ class Database:
         if not payment_id:
             content = self.c.execute('SELECT * FROM PAYMENTS')
             for c in content:
-                payment = {"id": c[0], "item_list" : stringToItemlist(c[3]), "total": c[1], "currency": c[2], "total_tax": 0, "client_id": c[6]}
+                payment = {"id": c[0], "item_list" : stringToItemlist(c[3]), "total": c[1], "currency": c[2], "total_tax": 0, "client_id": c[7]}
                 pays.append(payment)
             return pays
         p = (payment_id, )
         content = self.c.execute('SELECT * FROM PAYMENTS WHERE payment_id=?', p)
         for c in content:
-            payment = {"id": c[0], "item_list" : stringToItemlist(c[3]), "total": c[1], "currency": c[2], "total_tax": 0, "client_id": c[6]}
+            payment = {"id": c[0], "item_list" : stringToItemlist(c[3]), "total": c[1], "currency": c[2], "total_tax": 0, "client_id": c[7]}
             return payment
         return None
+
+    def getClients(self, client_id=None):
+        clients = []
+        if not client_id:
+            content = self.c.execute('SELECT * FROM CLIENT_BALANCE')
+            for c in content:
+                client = {"id": c[0], "balance" : c[1], "currency": c[2]}
+                clients.append(client)
+            return clients
+        p = (client_id, )
+        content = self.c.execute('SELECT * FROM CLIENT_BALANCE WHERE client_id=?', p)
+        for c in content:
+            client = {"id": c[0], "balance" : c[1], "currency": c[2]}
+            return client
+        return None
+
+    def updateClientFunds(self, client_id, new_balance):
+        p = (new_balance, client_id,)
+        try:
+            self.c.execute('UPDATE CLIENT_BALANCE SET funds = ? WHERE client_id=?',p)
+            self.connection.commit()
+            return True
+        except:
+            return False
+
+    def updatePaymentStatus(self, payment_id, status):
+        ts = time.time()
+        date_time = timestampToDateTime(ts)
+        p = (status, date_time, payment_id,)
+        try:
+            self.c.execute('UPDATE PAYMENTS SET state = ?, update_time=? WHERE payment_id=?',p)
+            self.connection.commit()
+            return True
+        except:
+            return False
+
+        
 
 

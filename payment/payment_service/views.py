@@ -64,20 +64,53 @@ def execute_payment():
     body_params = request.json
 
     try:
+        payment_id = body_params["payment_id"]
+    except Exception:
+        return Response(response=json.dumps({"Error" : "Possibly wrong params"}), status=500, mimetype='application/json')
+
+
+    try:
         access_token = body_params["access_token"]
-    except Exception as e:
-        print("No access token. Assuming credit card and not RoadRnD funds", flush=True)
-        return Response(response=json.dumps({"ERROR" : e}), status=500, mimetype='application/json')
-
-    print(access_token)
-
-    # try:
-    #     # payment_id = body_params["payment_id"]
-    #     # And also credit card data or access token or something?
-    #     print(body_params, flush=True)
+        print("access_token:" + str(access_token), flush=True)
+        ## TODO: check access token validity
+        ## TODO: Make eventual USD to EUR conversions and vice-versa. Lets assume all EUR for now
         
-    # except Exception:
-    #     return Response(response=json.dumps({"Error" : "Possibly wrong params"}), status=500, mimetype='application/json')
+        # Fetch payment data from db.
+        payment = db.getPayments(payment_id)
+
+        # Access client stuff from db.
+        client_acc = db.getClients(payment["client_id"])
+        if not client_acc:
+            return Response(response=json.dumps({"Error" : str(payment["client_id"]) + " doesn't exist!"}), status=500, mimetype='application/json')
+
+        # Check if enough funds, if yes, deduct from one client (and add to eventually other client?) and return OK else return not allowed
+        payment_status = 'not_approved'
+        if client_acc["currency"] == payment["currency"]:
+            new_balance = str(float(client_acc["balance"]) - float(payment["total"]))
+
+            if new_balance >= 0:
+                if not db.updateClientFunds(client_acc["id"], new_balance):
+                    return Response(response=json.dumps({"Error" : "Couldn't update client balance!"}), status=500, mimetype='application/json')
+                payment_status = 'approved'
+        else:
+            return Response(response=json.dumps({"Error" : "Currencies from client account don't match the payment currency. (Operation not supported yet!)"}), status=500, mimetype='application/json')
+    
+        # Update payment status to approved or not approved and update the timestamps and return respective
+        if not db.updatePaymentStatus(payment_id, payment_status):
+            return Response(response=json.dumps({"Error" : "Couldn't update payment status!"}), status=500, mimetype='application/json')
+ 
+        if payment_status == 'not_approved':
+            return Response(response=json.dumps({"OK" : "Payment not approved!"}), status=200, mimetype='application/json')
+        else:
+            return Response(response=json.dumps({"OK" : "Payment executed and approved"}), status=200, mimetype='application/json')
 
 
-    return Response(response=json.dumps({"OK" : "Payment executed and approved", "payment_id": access_token}), status=200, mimetype='application/json')
+    except Exception:
+        print("No access token. Assuming credit card and not RoadRnD funds", flush=True)
+        # return Response(response=json.dumps({"ERROR" : e}), status=500, mimetype='application/json')
+
+    ## We assume credit card stuff is always allowed
+
+    ## TODO: return payment status and update times etc
+    ## TODO: How does the exterior have access to these responses?
+    return Response(response=json.dumps({"OK" : "Payment executed and approved"}), status=200, mimetype='application/json')

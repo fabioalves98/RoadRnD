@@ -125,6 +125,7 @@ function gotData(data) {
         if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
             presentFinalPopup();
         }else if(this.readyState === XMLHttpRequest.DONE && this.status === 500){
+            console.log(xhr.responseText);
             presentErrorPopup();
         }
     }
@@ -145,7 +146,8 @@ function gotDataFunds() {
     xhr.onreadystatechange = function () { 
         if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
             presentFinalPopup();
-        }else{
+        }else if(this.readyState === XMLHttpRequest.DONE && this.status === 500){
+            console.log(xhr.responseText);
             presentErrorPopup();
         }
     }
