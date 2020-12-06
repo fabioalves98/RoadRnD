@@ -45,16 +45,16 @@ class Database:
         ## If we have an empty db, fill with stuff
         if empty:
             print("Empty, filling DB")
-            self.c.execute("INSERT INTO CLIENT_BALANCE VALUES ('AA-01-AA', '32.90', 'EUR')")
-            self.c.execute("INSERT INTO CLIENT_BALANCE VALUES ('GD-02-XA', '100.00', 'EUR')")
-            self.c.execute("INSERT INTO CLIENT_BALANCE VALUES ('LD-34-CV', '2.32', 'EUR')")
+            self.c.execute("INSERT INTO CLIENT_BALANCE VALUES ('1234567', '32.90', 'EUR')")
+            self.c.execute("INSERT INTO CLIENT_BALANCE VALUES ('1234568', '100.00', 'EUR')")
+            self.c.execute("INSERT INTO CLIENT_BALANCE VALUES ('1234569', '2.32', 'EUR')")
             # TODO: Fix the item list here.
             ts = time.time()
             p = (timestampToDateTime(ts), timestampToDateTime(ts),)
-            self.c.execute('''INSERT INTO PAYMENTS VALUES ('PAYMENT-BDSk84729DHDSA7JDG6', '12.98', 'EUR', 'Rental:12.98', ?, ?, 'created', 'AA-01-AA')''', p)
+            self.c.execute('''INSERT INTO PAYMENTS VALUES ('PAYMENT-BDSk84729DHDSA7JDG6', '12.98', 'EUR', 'Rental:12.98', ?, ?, 'created', '1234567')''', p)
             ts = time.time()
             p = (timestampToDateTime(ts), timestampToDateTime(ts),)
-            self.c.execute('''INSERT INTO PAYMENTS VALUES ('PAYMENT-BDSk88929DHDSA7JDG6', '28.90', 'EUR', 'Rental:28.90', ?, ?, 'created', 'LD-34-CV')''', p)
+            self.c.execute('''INSERT INTO PAYMENTS VALUES ('PAYMENT-BDSk88929DHDSA7JDG6', '28.90', 'EUR', 'Rental:28.90', ?, ?, 'created', '1234569')''', p)
             self.connection.commit()
         # content = self.c.execute('SELECT * FROM CLIENT_BALANCE')
         # for c in content:
@@ -92,6 +92,29 @@ class Database:
             payment = {"id": c[0], "item_list" : stringToItemlist(c[3]), "total": c[1], "currency": c[2], "total_tax": 0, "client_id": c[7]}
             return payment
         return None
+
+    def deletePayment(self, payment_id):
+        p = (payment_id, )
+        try:
+            self.c.execute('DELETE FROM PAYMENTS WHERE payment_id=?', p)
+            self.connection.commit()
+        except Exception as e:
+            print(e, flush=True)
+            return False
+        return True
+
+    def insertClient(self, client):
+        p = (client["id"], '0.00', client["currency"])
+        try:
+            self.c.execute("INSERT INTO CLIENT_BALANCE VALUES (?, ?, ?)", p)
+        except sqlite3.IntegrityError:
+            print("A client with id '%s' already exists" % client["id"])
+            return False
+
+        self.connection.commit()
+
+        return True
+
 
     def getClients(self, client_id=None):
         clients = []

@@ -6,14 +6,84 @@ from payment_service.common import calculateTax
 
 payment = Blueprint('payment_service', __name__)
 
-#TODO: add other get routes etc etc. 
 
-temporary_payment_object = {}
+
 db = Database() 
 
+## TODO: create DELETE  for clients
+@payment.route('/client/<client_id>', methods=["GET"])
+def get_client(client_id):
+
+    client = db.getClients(client_id)
+
+    # Check if that exists
+    if not client:
+        return Response(response=json.dumps({"Error" : "<client_id> provided doesn't exist!"}), status=500, mimetype='application/json')
+
+    return Response(response=json.dumps(client), status=200, mimetype='application/json')
+
+@payment.route('/client/<client_id>', methods=["PUT"])
+def update_client(client_id):
+
+    body_params = request.json
+    try:
+        client = db.getClients(client_id)
+        if not client:
+            return Response(response=json.dumps({"Error" : "<client_id> provided doesn't exist!"}), status=500, mimetype='application/json') 
+        new_balance = str(float(client["balance"]) + float(body_params["balance"]))
+        db.updateClientFunds(client_id, new_balance)
+    except Exception as e:
+        return Response(response=json.dumps({"Error" : "Something went wrong while updating client balance", "test": e}), status=500, mimetype='application/json')
+
+    return Response(status=200, mimetype='application/json')
 
 
-@payment.route('/create')
+@payment.route('/client', methods=["POST"])
+def add_client():
+
+    body_params = request.json
+    try:
+        # invoice_nr = body_params["invoice_number"]
+        client_id = body_params["client_id"]
+        currency = body_params["currency"]
+        
+        client = {"id": client_id, "currency": currency}
+
+        if not db.insertClient(client):
+            return Response(response=json.dumps({"Error" : "Something went wrong while creatinga new payment! Try again!"}), status=500, mimetype='application/json')
+
+        print(db.getClients(), flush=True)
+
+    except Exception as e:
+        return Response(response=json.dumps({"Error" : e}), status=500, mimetype='application/json')
+
+
+    # return redirect(url_for("/approve"), payment_info=temporary_payment_object)
+    return Response(status=200)
+
+
+
+@payment.route('/payment/<payment_id>', methods=["GET"])
+def get_payment(payment_id):
+    payment = db.getPayments(payment_id)
+
+    # Check if that exists
+    if not payment:
+        return Response(response=json.dumps({"Error" : "<payment_id> provided doesn't exist!"}), status=500, mimetype='application/json')
+
+    return Response(response=json.dumps(payment), status=200, mimetype='application/json')
+
+@payment.route('/payment/<payment_id>', methods=["DELETE"])
+def remove_payment(payment_id):
+
+    if not db.deletePayment(payment_id):
+        return Response(response=json.dumps({"Error" : "<payment_id> provided doesn't exist!"}), status=500, mimetype='application/json')
+
+
+    return Response(status=200, mimetype='application/json')
+ 
+
+@payment.route('/payment', methods=["POST"])
 def create_payment():
     
     # print(type(request.json), flush=True)
@@ -28,7 +98,6 @@ def create_payment():
         total_tax = calculateTax(items)
         
         payment = {"id": "PAYMENT-" + str(payment_id),"item_list" : items, "total": transaction_val, "currency": transaction_cur, "total_tax": str(total_tax), "client_id": client_id}
-        temporary_payment_object.update(payment)
 
         if not db.insertPayment(payment):
             return Response(response=json.dumps({"Error" : "Something went wrong while creatinga new payment! Try again!"}), status=500, mimetype='application/json')
@@ -40,7 +109,7 @@ def create_payment():
 
 
     # return redirect(url_for("/approve"), payment_info=temporary_payment_object)
-    return Response(status=200)
+    return Response(response=json.dumps({"payment_id": payment["id"]}), status=200)
 
 @payment.route('/approve/<payment_id>')
 def display_payment_page(payment_id):
