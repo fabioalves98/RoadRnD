@@ -8,6 +8,11 @@
     "radius"   : 30                   // type? units, not sure. Only used if location is set
 }
 ```
+Example: 
+```bash
+curl --header "Content-Type: application/json"   --request GET   --data '{"location" : "40.640802, -8.653285", "radius": 1}'   http://40.115.31.209:5002/car
+```
+
 
 
 `/car/{car_id} POST (Body params)` 

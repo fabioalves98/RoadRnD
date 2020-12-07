@@ -4,6 +4,9 @@ import random
 import requests
 import json
 
+# API_LINK = "http://localhost" 
+API_LINK = "http://40.115.31.209"
+
 cars = {
     'Honda' :   ['Civic', 'Accord', 'Brio', 'City', 'Jazz', 'Legend'],
     'Kia'   :   ['Ceed', 'Rio', 'Stinger', 'Soul'],
@@ -60,14 +63,14 @@ for x in range(30):
     #print(car)
     #Car inventory service
     print("Add car to inventory service")
-    API_URL = "http://localhost:5001/car"
+    API_URL = API_LINK + ":5001/car"
     headers = {"Content-Type": "application/json"}
     response = requests.post(API_URL, data = json.dumps(car),headers=headers )
     print(response)
     if(response.status_code == 200):
         # #Unlock service
         print("Add car to unlock service")
-        API_URL = "http://localhost:5003/add"
+        API_URL = API_LINK + ":5003/add"
         headers = {"Content-Type": "application/json"}
         data = {
             "id": car_id,
@@ -78,7 +81,7 @@ for x in range(30):
 
         #Car location service
         print("Add car to location service")
-        API_URL = "http://localhost:5002/car/" + str(car_id)
+        API_URL = API_LINK + ":5002/car/" + str(car_id)
         headers = {"Content-Type": "application/json"}
         data = {
             "location": location,
