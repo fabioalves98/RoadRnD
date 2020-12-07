@@ -11,22 +11,45 @@
   /* text-align: center;
   display: flex; */
   justify-content: center;
+
+  -webkit-box-shadow: 0 19px 38px rgba(0, 0, 0, 0.30), 0 15px 12px rgba(0, 0, 0, 0.22);
+  -moz-box-shadow: 0 19px 38px rgba(0, 0, 0, 0.30), 0 15px 12px rgba(0, 0, 0, 0.22);
+  -ms-box-shadow: 0 19px 38px rgba(0, 0, 0, 0.30), 0 15px 12px rgba(0, 0, 0, 0.22);
+  -o-box-shadow: 0 19px 38px rgba(0, 0, 0, 0.30), 0 15px 12px rgba(0, 0, 0, 0.22);
+  box-shadow: 0 19px 38px rgba(0, 0, 0, 0.30), 0 15px 12px rgba(0, 0, 0, 0.22);
 }
+body {
+  background: #E0E0E0;
+}
+
+.gmd {
+  background: #fff;
+  border-radius: 2px;
+  display: block;
+  float: left;
+  height: 150px;
+  margin: 1rem;
+  position: relative;
+  width: 150px;
+}
+
   </style>
 <head>
   <meta name="google-signin-client_id" content="684722782791-h4bqdars1o0b12dvbelftgcj8c2ntc1r.apps.googleusercontent.com">
 </head>
 <body>
-    
-  <div class = "center">
-      <h1 style="text-align: center;">LOGIN</h1>
-      <div style="align-items: center;" id="my-signin2"></div>
+
+  <div class="center">
+      <h1 style="text-align: center;">Login</h1>
+      <div style="align-items: center; margin-left: 33px;" id="my-signin2"></div>
       <br>
-      <div class="fb-login-button" data-size="large" data-button-type="login_with" data-layout="default" data-auto-logout-link="false" data-use-continue-as="false" data-width="" onlogin="checkLoginState();"></div>
+      <div style="align-items: center; margin-left: 37px;" id="my-signin2" class="fb-login-button" data-size="large" data-button-type="login_with" data-layout="default" data-auto-logout-link="false" data-use-continue-as="false" data-width="" onlogin="checkLoginState();"></div>
   </div>
-
     
 
+  <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+  <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+  <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
 
 <script>
     window.fbAsyncInit = function() {
@@ -59,6 +82,15 @@
     function checkLoginState() {
     FB.getLoginStatus(function(response) {
         statusChangeCallback(response);
+        $.post("http://localhost:5005/oauth/login",
+        {
+          "id": response
+        },
+        function(data, status){
+          alert("Data: " + data + "\nStatus: " + status);
+        });
+
+
         console.log('Login status facebook: ' + response);
     });
     }
@@ -75,10 +107,23 @@
   }
 
   </script>
-
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script>
     function onSuccess(googleUser) {
       console.log('Logged in as: ' + googleUser.getBasicProfile().getName());
+      $.post("http://localhost:5005/oauth/login",
+      {
+        "id": googleUser.getBasicProfile().getId(),
+        "userName" : googleUser.getBasicProfile().getName(),
+        "image" : googleUser.getBasicProfile().getImageUrl(),
+        "mail": googleUser.getBasicProfile().getEmail(),
+        "client_id": "{{client_id}}",
+        "redirect_url" : "{{redirect_url}}"
+      },
+      function(data, status){
+        alert("Data: " + data + "\nStatus: " + status);
+      });
+
     }
     function onFailure(error) {
       console.log(error);

@@ -69,7 +69,7 @@ class MongoAPI:
                 "num_of_seats": 7,
                 "price_per_minute": 10
             }
-            self.collection.insert_many([car1, car2, car3, car4])
+            #self.collection.insert_many([car1, car2, car3, car4])
 
     def read(self):
         log.info('Reading All Data')
@@ -95,8 +95,8 @@ class MongoAPI:
 
     def delete(self, data):
         log.info('Deleting Data')
-        filt = data['Filter']
-        response = self.collection.delete_one(filt)
+        #filt = data['Filter']
+        response = self.collection.delete_one(data)
         output = {'Status': 'Successfully Deleted' if response.deleted_count > 0 else "Document not found."}
         return output
 
@@ -267,6 +267,19 @@ def post_car():
                     mimetype='application/json')
     doc = {"Document" : data}
     response = obj1.write(doc)
+    return Response(response=json.dumps(response),
+                    status=200,
+                    mimetype='application/json')
+
+
+@app.route('/car/<carId>', methods=['DELETE'])
+def delete_car(carId):
+    db = {
+        "database" : "carInventory",
+        "collection" : "cars"
+    }
+    obj1 = MongoAPI(db)
+    response = obj1.delete({"id": carId})
     return Response(response=json.dumps(response),
                     status=200,
                     mimetype='application/json')
