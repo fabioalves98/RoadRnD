@@ -4,6 +4,9 @@ import random
 import requests
 import json
 
+from bs4 import BeautifulSoup
+import urllib3
+
 # API_LINK = "http://localhost" 
 API_LINK = "http://40.115.31.209"
 
@@ -38,8 +41,15 @@ for x in range(30):
     registrationYear = random.randint(2000, 2020)
     fuelType = random.choice(fuel_type)
     owner = random.choice(first_name) + ' ' + random.choice(last_name)
-    #FIRST PHOTO FROM GOOGLE
-    photo = ''
+    
+    #get url photo
+    http = urllib3.PoolManager()
+    url = "https://www.google.com/images?q=" + brand + "+" + model
+    response = http.request('GET', url)
+    soup = BeautifulSoup(response.data, features="lxml")
+    images = soup.findAll('img')
+    photo = images[1].get('src')
+
     num_of_seats = random.choice(num_of_seatsOP)
     price_per_minute = random.randint(1, 10)
     car = {
