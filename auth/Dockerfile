@@ -13,13 +13,16 @@ WORKDIR /app
 
 # # Copy everything which is present in my docker directory to working (/app)
 COPY /requirements.txt /app
+ADD /templates /app/templates
+
+RUN apk add gcc musl-dev python3-dev libffi-dev openssl-dev
 
 RUN pip3 install -r requirements.txt
 
 COPY ["auth.py", "/app"]
 
 # Exposing an internal port
-EXPOSE 5002
+EXPOSE 5005
 
 
 # Step 4 set default commands

@@ -56,8 +56,12 @@ class MongoAPI:
         output = {'Status': 'Successfully Deleted' if response.deleted_count > 0 else "Document not found."}
         return output
 
-    def findID(self, id):
-        documents = self.collection.find({"id" : id})
+    def findAuth_Code(self, auth_c):
+        documents = self.collection.find({"auth_code" : auth_c})
+        output = [{item: data[item] for item in data if item != '_id'} for data in documents]
+        return output
+    def findId(self, id):
+        documents = self.collection.find({"client_id" : id})
         output = [{item: data[item] for item in data if item != '_id'} for data in documents]
         return output
 
@@ -67,21 +71,44 @@ def generate_authorization_code(client_id, redirect_url):
         "redirect_url": redirect_url,
     }).encode()
     authorization_code = f.encrypt(message).decode("utf-8")
-
-    authorization_codes[authorization_code] = {
+    db = {
+        "database" : "auth",
+        "collection" : "authCodes"
+    }
+    obj1 = MongoAPI(db)
+    data = {
+        "auth_code": authorization_code,
         "client_id": client_id,
         "redirect_url": redirect_url
     }
 
+    doc = {"Document" : data}
+    response = obj1.write(doc)
+
+    # authorization_codes[authorization_code] = {
+    #     "client_id": client_id,
+    #     "redirect_url": redirect_url
+    # }
+
     return authorization_code
 
 def check_authorization_code(authorization_code, client_id, redirect_url):
-    ac = authorization_codes.get(authorization_code )
-    if ac == None:
+    db = {
+        "database" : "auth",
+        "collection" : "authCodes"
+    }
+    obj1 = MongoAPI(db)
+    ac = obj1.findAuth_Code(authorization_code)
+    log.info('ac ' + str(ac))
+    #ac = authorization_codes.get(authorization_code )
+    if len(ac) == 0:
         return False
 
-    client_id_ac = ac.get('client_id')
-    redirect_url_ac = ac.get('redirect_url')
+    #client_id_ac = ac.get('client_id')
+    #redirect_url_ac = ac.get('redirect_url')
+    client_id_ac = ac[0]['client_id']
+    redirect_url_ac = ac[0]['redirect_url']
+
     if client_id != client_id_ac or redirect_url != redirect_url_ac:
         return False
     
@@ -91,7 +118,18 @@ def check_authorization_code(authorization_code, client_id, redirect_url):
 #https://realpython.com/token-based-authentication-with-flask/#encode-token
 
 def generate_access_token(client_id):
-    clients.append(client_id)
+    # db = {
+    #     "database" : "auth",
+    #     "collection" : "authCodes"
+    # }
+    # obj1 = MongoAPI(db)
+    # data = {
+    #     "client_id": client_id
+    # }
+
+    # doc = {"Document" : data}
+    # response = obj1.write(doc)
+    #clients.append(client_id)
     try:
         payload = {
             'exp': datetime.datetime.utcnow() + datetime.timedelta(days=1, seconds=5),
@@ -110,7 +148,16 @@ def generate_access_token(client_id):
 def verify_access_token(auth_token):
     client_id = decode_access_token(auth_token)
     print('cliente_id_validate' + str(client_id), file=sys.stdout)
-    if client_id in clients:
+
+    db = {
+        "database" : "auth",
+        "collection" : "authCodes"
+    }
+    obj1 = MongoAPI(db)
+    client = obj1.findId(client_id)
+
+    #if client_id in clients:
+    if len(client) > 0:
         return Response(response=json.dumps("OK"),
                         status=200,
                         mimetype='application/json')
@@ -161,7 +208,7 @@ def post_success():
     #save in bd
     print('Login success, client id ' + json.dumps(user_info), file=sys.stdout)
     #####redirect?? com authorization_code e user_info
-    return Response(200)
+    return render_template(authorization_code)
     #return Response(response=json.dumps(user_info), status=200, mimetype='application/json')
 
 
@@ -184,7 +231,7 @@ def get_token():
 
     access_token = generate_access_token(client_id)
     response = json.dumps({ 
-        "access_token": access_token,
+        "access_token": access_token.decode("utf-8"),
         "token_type": "Bearer"
     })
     return Response(response=response,

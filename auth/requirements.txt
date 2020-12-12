@@ -5,4 +5,6 @@ itsdangerous==1.1.0
 Jinja2==2.11.2
 MarkupSafe==1.1.1
 Werkzeug==1.0.1
-cryptography==3.2.1
+cryptography==2.1.4
+pyjwt==1.7.1
+pymongo==3.10.1
