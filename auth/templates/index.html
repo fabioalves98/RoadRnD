@@ -43,7 +43,8 @@ body {
       <h1 style="text-align: center;">Login</h1>
       <div style="align-items: center; margin-left: 33px;" id="my-signin2"></div>
       <br>
-      <div style="align-items: center; margin-left: 37px;" id="my-signin2" class="fb-login-button" data-size="large" data-button-type="login_with" data-layout="default" data-auto-logout-link="false" data-use-continue-as="false" data-width="" onlogin="checkLoginState();"></div>
+      <!-- <div style="align-items: center; margin-left: 37px;" id="my-signin2" class="fb-login-button" data-size="large" data-button-type="login_with" data-layout="default" data-auto-logout-link="false" data-use-continue-as="false" data-width=""  scope="public_profile, email, picture" onlogin="checkLoginState();"></div> -->
+      <fb:login-button style="align-items: center; margin-left: 80px;" scope="public_profile, email" onlogin="checkLoginState();" data-auto-logout-link="true" data-size="xlarge"></fb:login-button>
   </div>
     
 
@@ -82,16 +83,7 @@ body {
     function checkLoginState() {
     FB.getLoginStatus(function(response) {
         statusChangeCallback(response);
-        $.post("http://localhost:5005/oauth/login",
-        {
-          "id": response
-        },
-        function(data, status){
-          alert("Data: " + data + "\nStatus: " + status);
-        });
-
-
-        console.log('Login status facebook: ' + response);
+        console.log('Login status facebook: ' + response.status);
     });
     }
 
@@ -99,11 +91,30 @@ body {
     console.log('statusChangeCallback');
     console.log(response);                   // The current login status of the person.
     if (response.status === 'connected') {   // Logged into your webpage and Facebook.
-    //   testAPI();  
+       testAPI();  
     } else {                                 // Not logged into your webpage or we are unable to tell.
       document.getElementById('status').innerHTML = 'Please log ' +
         'into this webpage.';
     }
+
+    function testAPI() {
+      FB.api('/me',{fields: 'name, email, picture'}, function(response) {
+        console.log(response);
+        $.post("http://localhost:5005/oauth/login",
+            {
+              "id": response.id,
+              "userName" : response.name,
+              "image" : response.picture.data.url,
+              "mail": response.email,
+              "client_id": "{{client_id}}",
+              "redirect_url" : "{{redirect_url}}"
+            },
+            function(data, status){
+              alert("Data: " + data + "\nStatus: " + status);
+            });
+      });
+    }
+
   }
 
   </script>

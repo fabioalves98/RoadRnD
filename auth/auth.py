@@ -193,6 +193,7 @@ def get_authorize():
 @app.route('/oauth/login', methods=['POST'])
 def post_success():
     data = request.values
+    print('Login success, client id ' + str(data), file=sys.stdout)
     authorization_code = generate_authorization_code(data["client_id"], data["redirect_url"])
     user_id = data['id']
     user_name = data['userName']
