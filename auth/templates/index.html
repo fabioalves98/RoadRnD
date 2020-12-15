@@ -8,6 +8,7 @@
   top: 50%;
   left: 50%;
   margin: -100px 0 0 -150px;
+  background: #fff;
   /* text-align: center;
   display: flex; */
   justify-content: center;
@@ -32,7 +33,12 @@ body {
   position: relative;
   width: 150px;
 }
-
+body {
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: 100% 100%;
+  background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Ilha_Dos_Puxadoiros_%2847261194681%29_%28cropped%29.jpg/1200px-Ilha_Dos_Puxadoiros_%2847261194681%29_%28cropped%29.jpg');
+}
   </style>
 <head>
   <meta name="google-signin-client_id" content="684722782791-h4bqdars1o0b12dvbelftgcj8c2ntc1r.apps.googleusercontent.com">
@@ -44,7 +50,7 @@ body {
       <div style="align-items: center; margin-left: 33px;" id="my-signin2"></div>
       <br>
       <!-- <div style="align-items: center; margin-left: 37px;" id="my-signin2" class="fb-login-button" data-size="large" data-button-type="login_with" data-layout="default" data-auto-logout-link="false" data-use-continue-as="false" data-width=""  scope="public_profile, email, picture" onlogin="checkLoginState();"></div> -->
-      <fb:login-button style="align-items: center; margin-left: 80px;" scope="public_profile, email" onlogin="checkLoginState();" data-auto-logout-link="true" data-size="xlarge"></fb:login-button>
+      <fb:login-button style="align-items: center; margin-left: 86px;" scope="public_profile, email" onlogin="checkLoginState();" data-auto-logout-link="true" data-size="xlarge"></fb:login-button>
   </div>
     
 

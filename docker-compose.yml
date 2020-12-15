@@ -89,3 +89,11 @@ services:
     build: ./payment/.
     ports:
       - "5006:5000"
+
+  # Auth
+  auth:
+    build: ./auth/.
+    depends_on: 
+        - mymongo_1
+    ports:
+        - "5005:5005"

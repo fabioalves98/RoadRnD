@@ -42,6 +42,15 @@ class MongoAPI:
                   'Document_ID': str(response.inserted_id)}
         return output
 
+
+    def upsert(self, filt, data):
+        log.info('Updating Data')
+        #options = { "upsert": true }
+        updated_data = {"$set": data}
+        response = self.collection.update_one(filt, updated_data, upsert=True)
+        output = {'Status': 'Successfully Updated' if response.modified_count > 0 else "Nothing was updated."}
+        return output
+
     def update(self):
         log.info('Updating Data')
         filt = self.data['Filter']
@@ -83,7 +92,7 @@ def generate_authorization_code(client_id, redirect_url):
     }
 
     doc = {"Document" : data}
-    response = obj1.write(doc)
+    response = obj1.upsert({"client_id" :client_id }, data)
 
     # authorization_codes[authorization_code] = {
     #     "client_id": client_id,
