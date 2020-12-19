@@ -106,7 +106,7 @@ body {
     function testAPI() {
       FB.api('/me',{fields: 'name, email, picture'}, function(response) {
         console.log(response);
-        $.post("http://localhost:5005/oauth/login",
+        $.post("http://roadrnd.westeurope.cloudapp.azure.com:5005/oauth/login",
             {
               "id": response.id,
               "userName" : response.name,
@@ -128,7 +128,7 @@ body {
   <script>
     function onSuccess(googleUser) {
       console.log('Logged in as: ' + googleUser.getBasicProfile().getName());
-      $.post("http://localhost:5005/oauth/login",
+      $.post("http://roadrnd.westeurope.cloudapp.azure.com:5005/oauth/login",
       {
         "id": googleUser.getBasicProfile().getId(),
         "userName" : googleUser.getBasicProfile().getName(),
