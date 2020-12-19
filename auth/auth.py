@@ -74,10 +74,11 @@ class MongoAPI:
         output = [{item: data[item] for item in data if item != '_id'} for data in documents]
         return output
 
-def generate_authorization_code(client_id, redirect_url):
+def generate_authorization_code(client_id, redirect_url, user_id):
     message = json.dumps({
         "client_id": client_id,
         "redirect_url": redirect_url,
+        "user_id": user_id
     }).encode()
     authorization_code = f.encrypt(message).decode("utf-8")
     db = {
@@ -88,11 +89,12 @@ def generate_authorization_code(client_id, redirect_url):
     data = {
         "auth_code": authorization_code,
         "client_id": client_id,
-        "redirect_url": redirect_url
+        "redirect_url": redirect_url,
+        "user_id": user_id
     }
 
     doc = {"Document" : data}
-    response = obj1.upsert({"client_id" :client_id }, data)
+    response = obj1.upsert({"user_id" :user_id }, data)
 
     # authorization_codes[authorization_code] = {
     #     "client_id": client_id,
@@ -203,14 +205,14 @@ def get_authorize():
 def post_success():
     data = request.values
     print('Login success, client id ' + str(data), file=sys.stdout)
-    authorization_code = generate_authorization_code(data["client_id"], data["redirect_url"])
     user_id = data['id']
     user_name = data['userName']
     image = data['image']
     mail = data['mail']
+    authorization_code = generate_authorization_code(data["client_id"], data["redirect_url"], user_id)
     user_info = {
         "auth_code" : authorization_code,
-        "client_id" : data["client_id"],
+        "client_id" : user_id,
         "user_name" : user_name,
         "image"     : image,
         "mail"      : mail
