@@ -14,7 +14,7 @@ type CarLocation struct{
 
 type Location struct{
 	Coords 	string `json:"location"`
-	Radius  int    `json:"radius"`
+	Radius  float32`json:"radius"`
 }
 
 

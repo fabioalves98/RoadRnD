@@ -2,7 +2,7 @@ from flask import Blueprint, Response, request, redirect, render_template, url_f
 import json
 import shortuuid
 from payment_service.database import *
-from payment_service.common import calculateTax
+from payment_service.common import calculateTax, convertCurrency
 
 payment = Blueprint('payment_service', __name__)
 
@@ -142,7 +142,6 @@ def execute_payment():
         access_token = body_params["access_token"]
         print("access_token:" + str(access_token), flush=True)
         ## TODO: check access token validity
-        ## TODO: Make eventual USD to EUR conversions and vice-versa. Lets assume all EUR for now
         
         # Fetch payment data from db.
         payment = db.getPayments(payment_id)
@@ -152,18 +151,22 @@ def execute_payment():
         if not client_acc:
             return Response(response=json.dumps({"Error" : str(payment["client_id"]) + " doesn't exist!"}), status=500, mimetype='application/json')
 
-        # Check if enough funds, if yes, deduct from one client (and add to eventually other client?) and return OK else return not allowed
+        # Check if enough funds, if yes, deduct from one client and return OK else return not allowed
         payment_status = 'not_approved'
-        if client_acc["currency"] == payment["currency"]:
-            new_balance = str(float(client_acc["balance"]) - float(payment["total"]))
 
-            if new_balance >= 0:
-                if not db.updateClientFunds(client_acc["id"], new_balance):
-                    return Response(response=json.dumps({"Error" : "Couldn't update client balance!"}), status=500, mimetype='application/json')
-                payment_status = 'approved'
-        else:
-            return Response(response=json.dumps({"Error" : "Currencies from client account don't match the payment currency. (Operation not supported yet!)"}), status=500, mimetype='application/json')
-    
+        payment_total = float(payment["total"])
+        if client_acc["currency"] != payment["currency"]:
+            print("Different currency, converting!!", flush=True)
+            payment_total = convertCurrency(payment["currency"], client_acc["currency"], payment_total)
+
+        # Proceed with payment, or not
+        new_balance = str(float(client_acc["balance"]) - payment_total)
+
+        if new_balance >= 0:
+            if not db.updateClientFunds(client_acc["id"], new_balance):
+                return Response(response=json.dumps({"Error" : "Couldn't update client balance!"}), status=500, mimetype='application/json')
+            payment_status = 'approved'
+        
         # Update payment status to approved or not approved and update the timestamps and return respective
         if not db.updatePaymentStatus(payment_id, payment_status):
             return Response(response=json.dumps({"Error" : "Couldn't update payment status!"}), status=500, mimetype='application/json')
@@ -176,10 +179,5 @@ def execute_payment():
 
     except Exception:
         print("No access token. Assuming credit card and not RoadRnD funds", flush=True)
-        # return Response(response=json.dumps({"ERROR" : e}), status=500, mimetype='application/json')
 
-    ## We assume credit card stuff is always allowed
-
-    ## TODO: return payment status and update times etc
-    ## TODO: How does the exterior have access to these responses?
     return Response(response=json.dumps({"OK" : "Payment executed and approved"}), status=200, mimetype='application/json')

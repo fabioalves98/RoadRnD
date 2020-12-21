@@ -34,7 +34,7 @@ func main() {
 	r.PUT("/car_status/:car_id", updateCarStatus)
 
 
-	r.Run(":5002") // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
+	r.Run(":8080") // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 }
 
 
@@ -43,11 +43,12 @@ func getCarInformation(c *gin.Context){
 	var loc = common.Location{}
 	c.BindJSON(&loc)
 	car_locations := []common.CarLocation{}
-	// if loc.Coords != ""
 	if loc.Coords == ""{
 		car_locations = database.SelectAll()
 	}else{
-		car_locations = database.SelectFromLocation(loc.Coords, loc.Radius)
+		var radius_deg float32
+		radius_deg = (loc.Radius * 1.0) / 111 // dummy conversion from meters to degrees (1.0 degs -> 111 km) 
+		car_locations = database.SelectFromLocation(loc.Coords, radius_deg)
 		if len(car_locations) == 0 {
 			c.JSON(200, "No cars around the provided location. Try increasing search radius!")
 			return

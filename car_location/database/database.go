@@ -183,7 +183,7 @@ func SelectAll() []common.CarLocation{
 	return car_locations
 }
 
-func SelectFromLocation(location string, radius int) []common.CarLocation{
+func SelectFromLocation(location string, radius float32) []common.CarLocation{
 	point := locationStringToPoint(location)
 	car_locations := []common.CarLocation{}
 	statement := "SELECT * FROM CarLocation WHERE ST_DWithin(location, GeomFromEWKB($1), $2);"
