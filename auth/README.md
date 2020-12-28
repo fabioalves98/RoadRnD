@@ -4,7 +4,7 @@
 (App)       -/oauth/authorize client_id && redirect_url
 (Client)/Web page    - Login with one option
 (Client)/Web page   - POST /oauth/login -> login success
-(Auth)   - Redirect to the redirect_url with authorization code
+(Auth)   - Redirect to the redirect_url with authorization code and user information
 (App)       - GET /oauth/token authorization_code && client_id && redirect_url
             - return { 
                         "access_token": access_token,
@@ -17,8 +17,17 @@
 
 #EXAMPLE
 
-http://localhost:5005/oauth/authorize?client_id=12345&redirect_url=app
+http://localhost:5005/oauth/authorize?client_id=RoadRnD&redirect_url=http://www.roadrnd.com
 
-http://localhost:5005/oauth/token?client_id=12345&redirect_url=app&authorization_code=gAAAAABf1OVdE-7MrQY26BaQcp13syVEDv5YV48497UdwZ-RkSjHP7Vi1ILUMMR6UQt9OTC6X1G83708ZPjg5WyFO1AtvNrBBOH1ooAvbJGqt6eag6JJynTFXZOvm4x7K1FdU6LYrD2Y
+Local Storage items:
 
-http://localhost:5005/validate_token/eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2MDc4NzQzMTIsImlhdCI6MTYwNzc4NzkwNywic3ViIjoiMTIzNDUifQ.1dsDNKth7J6hjR7MVhHyQmbDxFbOaoNwLZy7XZ7Gpsg
+localStorage.getItem("user_name");
+localStorage.getItem("client_id");
+localStorage.getItem("auth_code");
+localStorage.getItem("image");
+localStorage.getItem("mail");
+
+
+http://localhost:5005/oauth/token?client_id=RoadRnD&redirect_url=http://www.roadrnd.com&authorization_code=gAAAAABf3j8tsk2J077ZI4yj3xCpZTcIvTbNn8lr7MjFujK9Sg5suLLEtIDw-DYeNaCLpGJDWp3ScD10Ys1j2gvpTmEcP2W0v3-grmL0t-gDSFw0GEjR2eCLd2ApDhk9_NgfZe2nrAKeuwjDeTLYIeWq3C9k32pR3FZHLmrGqC8UD7g5UpIwwyLASaxJC9Q9OPyzk1zXt_BB
+
+http://localhost:5005/validate_token/eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2MDg0ODcxMTMsImlhdCI6MTYwODQwMDcwOCwic3ViIjoiUm9hZFJuRCJ9.ZaxTIGnIl9CUqRazFMoWVgV7alLWBK9HVtHEBA3C8kA

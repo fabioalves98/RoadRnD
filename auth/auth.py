@@ -1,4 +1,4 @@
-from flask import Flask, request, json, Response, render_template
+from flask import Flask, request, json, Response, render_template, redirect
 from pymongo import MongoClient
 import logging as log
 import sys
@@ -217,10 +217,19 @@ def post_success():
         "image"     : image,
         "mail"      : mail
     }
+    response = {
+        "redirect_url" : data["redirect_url"],
+        "user_info"     : user_info
+    }
+
     #save in bd
     print('Login success, client id ' + json.dumps(user_info), file=sys.stdout)
     #####redirect?? com authorization_code e user_info
-    return render_template(authorization_code)
+    #return render_template(authorization_code)
+    #redirect_url = data["redirect_url"] + "?auth_code=" + authorization_code 
+    return Response(response=json.dumps(response),
+                    status=200,
+                    mimetype='application/json')
     #return Response(response=json.dumps(user_info), status=200, mimetype='application/json')
 
 

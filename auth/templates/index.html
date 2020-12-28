@@ -105,8 +105,8 @@ body {
 
     function testAPI() {
       FB.api('/me',{fields: 'name, email, picture'}, function(response) {
-        console.log(response);
-        $.post("http://roadrnd.westeurope.cloudapp.azure.com:5005/oauth/login",
+        console.log('Logged in with Facebook as: ' + response.name);
+        $.post("http://localhost:5005/oauth/login",
             {
               "id": response.id,
               "userName" : response.name,
@@ -116,7 +116,19 @@ body {
               "redirect_url" : "{{redirect_url}}"
             },
             function(data, status){
-              alert("Data: " + data + "\nStatus: " + status);
+              var dataJsonF = data;  
+              var userJsonF = dataJsonF.user_info;  
+              console.log('Success redirect to url  ' + dataJsonF.redirect_url);
+              //window.open(dataJson.redirect_url,"_self");
+              location.replace(dataJson.redirect_url);
+              console.log("Add items to localStorage");
+              localStorage.setItem("user_name", userJsonF.user_name);
+              localStorage.setItem("client_id", userJsonF.client_id);
+              localStorage.setItem("auth_code", userJsonF.auth_code);
+              localStorage.setItem("image", userJsonF.image);
+              localStorage.setItem("mail", userJsonF.mail);
+              console.log("Auth code: " + userJsonF.auth_code);
+              //console.log('localStorage ' + localStorage.getItem("user_name") +  localStorage.getItem("auth_code"));
             });
       });
     }
@@ -127,8 +139,8 @@ body {
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script>
     function onSuccess(googleUser) {
-      console.log('Logged in as: ' + googleUser.getBasicProfile().getName());
-      $.post("http://roadrnd.westeurope.cloudapp.azure.com:5005/oauth/login",
+      console.log('Logged in with Google as: ' + googleUser.getBasicProfile().getName());
+      $.post("http://localhost:5005/oauth/login",
       {
         "id": googleUser.getBasicProfile().getId(),
         "userName" : googleUser.getBasicProfile().getName(),
@@ -138,7 +150,20 @@ body {
         "redirect_url" : "{{redirect_url}}"
       },
       function(data, status){
-        alert("Data: " + data + "\nStatus: " + status);
+        
+        var dataJson = data;  
+        var userJson = dataJson.user_info;  
+        console.log('Success redirect to url  ' + dataJson.redirect_url);
+        //window.open(dataJson.redirect_url,"_self");
+        location.replace(dataJson.redirect_url);
+        console.log("Add items to localStorage");
+        localStorage.setItem("user_name", userJson.user_name);
+        localStorage.setItem("client_id", userJson.client_id);
+        localStorage.setItem("auth_code", userJson.auth_code);
+        localStorage.setItem("image", userJson.image);
+        localStorage.setItem("mail", userJson.mail);
+        console.log("Auth code: " + userJson.auth_code);
+        //console.log('localStorage ' + localStorage.getItem("user_name") +  localStorage.getItem("auth_code"));
       });
 
     }
