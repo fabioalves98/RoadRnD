@@ -20,6 +20,7 @@ type Car struct {
 	Num_of_seats     int
 	Owner            string
 	Photo            string
+	Price_per_minute int
 	RegistrationYear string
 }
 
@@ -32,8 +33,21 @@ type CarLocation struct {
 func main() {
 	r := gin.Default()
 
-	r.GET("/list", func(c *gin.Context) {
+	r.GET("/login", func(c *gin.Context) {
+		// Obtain required parameters to make request to OAuth service
+		client_id := c.DefaultQuery("client_id", "123")
+		redirect_url := c.DefaultQuery("redirect_url", "placeholder_url")
 
+		log.Println(client_id)
+		log.Println(redirect_url)
+
+		// Make request to OAuth Server
+		request_link := "http://roadrnd.westeurope.cloudapp.azure.com:5005/oauth/authorize?client_id=12345&redirect_url=app"
+
+		c.String(http.StatusOK, request_link)
+	})
+
+	r.GET("/list", func(c *gin.Context) {
 		// Get Car location from Car Location
 		resp, err := http.Get("http://172.18.0.1:5002/car")
 		if err != nil {
@@ -60,7 +74,7 @@ func main() {
 
 	r.GET("/cars", func(c *gin.Context) {
 		// Get Cars from Car Inventory
-		resp, err := http.Get("http://172.18.0.1:5001/car")
+		resp, err := http.Get("http://roadrnd.westeurope.cloudapp.azure.com:5001/car")
 		if err != nil {
 			log.Fatalln(err)
 		}
@@ -121,6 +135,19 @@ func main() {
 		log.Println(body)
 
 		c.String(http.StatusOK, "Car Unlocked")
+	})
+
+	r.GET("/payment", func(c *gin.Context) {
+		// Obtain required parameters to make request to payment service
+		client_id := c.DefaultQuery("client_id", "123")
+		transaction := c.DefaultQuery("transaction", "0")
+
+		log.Println(client_id)
+		log.Println(transaction)
+
+		request_link := "http://roadrnd.westeurope.cloudapp.azure.com:5006/approve/PAYMENT-BDSk84729DHDSA7JDG6"
+
+		c.String(http.StatusOK, request_link)
 	})
 
 	r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")

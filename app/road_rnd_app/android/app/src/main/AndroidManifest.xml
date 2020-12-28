@@ -2,7 +2,8 @@
     package="com.example.road_rnd_app">
    <application
         android:label="road_rnd_app"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:usesCleartextTraffic="true">
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
@@ -41,4 +42,5 @@
 
     <!-- Required to fetch data from the internet. -->
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-sdk android:minSdkVersion="20"/>
 </manifest>
