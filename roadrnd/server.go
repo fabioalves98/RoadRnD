@@ -47,9 +47,9 @@ func main() {
 		c.String(http.StatusOK, request_link)
 	})
 
-	r.GET("/list", func(c *gin.Context) {
+	r.GET("/map", func(c *gin.Context) {
 		// Get Car location from Car Location
-		resp, err := http.Get("http://172.18.0.1:5002/car")
+		resp, err := http.Get("http://roadrnd.westeurope.cloudapp.azure.com:5002/car")
 		if err != nil {
 			log.Fatalln(err)
 		}
