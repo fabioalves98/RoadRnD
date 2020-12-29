@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
           textTheme: TextTheme(
             bodyText1: TextStyle(fontSize: 25.0, color: Colors.black),
           )),
-      home: ListCars(),
+      home: MapSample(),
     );
   }
 }

@@ -20,56 +20,6 @@ class MongoAPI:
 
         documents = self.collection.find()
         output = [{item: data[item] for item in data if item != '_id'} for data in documents]
-        if len(output) == 0:
-            car1 = {
-                "id": "AA-01-AA",
-                "brand": "Opel",
-                "model": "Astra",
-                "kms": 0,
-                "registrationYear": "2010",
-                "fuelType": "gasoline",
-                "owner": "Homer Simpson",
-                "photo" : "",
-                "num_of_seats": 2,
-                "price_per_minute": 5
-            }
-            car2 = {
-                "id": "GD-02-XA",
-                "brand": "Audi",
-                "model": "A3",
-                "kms": 0,
-                "registrationYear": "2005",
-                "fuelType": "diesel",
-                "owner": "Homer Simpson",
-                "photo" : "",
-                "num_of_seats": 5,
-                "price_per_minute": 6
-            }
-            car3 = {
-                "id": "LD-34-CV",
-                "brand": "Kia",
-                "model": "Ceed",
-                "kms": 0,
-                "registrationYear": "2009",
-                "fuelType": "gasoline",
-                "owner": "Homer Simpson",
-                "photo" : "",
-                "num_of_seats": 5,
-                "price_per_minute": 3
-            }
-            car4 = {
-                "id": "RT-10-SA",
-                "brand": "Opel",
-                "model": "Corsa",
-                "kms": 0,
-                "registrationYear": "2000",
-                "fuelType": "gasoline",
-                "owner": "Homer Simpson",
-                "photo" : "",
-                "num_of_seats": 7,
-                "price_per_minute": 10
-            }
-            #self.collection.insert_many([car1, car2, car3, car4])
 
     def read(self):
         log.info('Reading All Data')

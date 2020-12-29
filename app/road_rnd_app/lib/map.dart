@@ -4,6 +4,8 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'dart:convert';
 
 import 'global.dart';
+import 'car.dart';
+import 'carview.dart';
 import 'car_location.dart';
 
 class MapSample extends StatefulWidget {
@@ -17,6 +19,30 @@ class _MapSampleState extends State<MapSample> {
   final LatLng _center = const LatLng(40.640786, -8.654378);
   final Map<String, Marker> markers = {};
   BitmapDescriptor pinLocationIcon;
+
+  void goToCar(BuildContext context, String car_id) async {
+    Car car;
+    print("Getting car - $car_id");
+
+    final response = await http.get(Global.lt_link + '/car/$car_id');
+
+    print(response.body);
+
+    if (response.statusCode == 200) {
+      final json = jsonDecode(response.body);
+      if (json != null) {
+        car = Car.fromJson(json);
+        print(car);
+      }
+    } else {
+      throw Exception('Failed to load car');
+    }
+    Navigator.of(context).push(MaterialPageRoute<void>(
+      builder: (BuildContext context) {
+        return CarView(car: car);
+      },
+    ));
+  }
 
   Future<void> _onMapCreated(GoogleMapController controller) async {
     mapController = controller;
@@ -47,7 +73,10 @@ class _MapSampleState extends State<MapSample> {
                 markerId: MarkerId(loc.id),
                 position: LatLng(lat, long),
                 infoWindow: InfoWindow(title: loc.id),
-                icon: pinLocationIcon);
+                icon: pinLocationIcon,
+                onTap: () {
+                  goToCar(context, loc.id);
+                });
             markers[loc.id] = marker;
           }
         });
@@ -55,7 +84,7 @@ class _MapSampleState extends State<MapSample> {
     } else {
       // If the server did not return a 200 OK response,
       // then throw an exception.
-      throw Exception('Failed to load album');
+      throw Exception('Failed to load locations');
     }
   }
 

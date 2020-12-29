@@ -50,8 +50,7 @@ class CarViewState extends State<CarView> {
         .push(MaterialPageRoute<void>(builder: (BuildContext context) {
       return InAppWebView(
         initialUrl:
-            'http://roadrnd.westeurope.cloudapp.azure.com:5006/approve/' +
-                payment_id,
+            'http://roadrnd.westeurope.cloudapp.azure.com:5006/approve/$payment_id',
       );
     }));
   }

@@ -35,6 +35,9 @@ type Payment struct {
 	Payment_id string
 }
 
+var docker_internal_ip = "http://172.18.0.1"
+var vm_ip = "http://roadrnd.westeurope.cloudapp.azure.com"
+
 func main() {
 	r := gin.Default()
 
@@ -54,7 +57,7 @@ func main() {
 
 	r.GET("/map", func(c *gin.Context) {
 		// Get Car location from Car Location
-		resp, err := http.Get("http://roadrnd.westeurope.cloudapp.azure.com:5002/car")
+		resp, err := http.Get(docker_internal_ip + ":5002/car")
 		if err != nil {
 			log.Fatalln(err)
 		}
@@ -71,6 +74,8 @@ func main() {
 			log.Println("Error Parsing Location JSON data - ", err)
 		}
 
+		log.Println(len(loc))
+
 		pretty_loc, err := json.MarshalIndent(loc, "", "    ")
 		log.Println(string(pretty_loc))
 
@@ -79,7 +84,7 @@ func main() {
 
 	r.GET("/cars", func(c *gin.Context) {
 		// Get Cars from Car Inventory
-		resp, err := http.Get("http://roadrnd.westeurope.cloudapp.azure.com:5001/car")
+		resp, err := http.Get(docker_internal_ip + ":5001/car")
 		if err != nil {
 			log.Fatalln(err)
 		}
@@ -96,10 +101,40 @@ func main() {
 			log.Println("Error Parsing Inventory JSON data - ", err)
 		}
 
+		log.Println(len(cars))
+
 		pretty_inv, err := json.MarshalIndent(cars, "", "    ")
 		log.Println(string(pretty_inv))
 
 		c.JSON(200, cars)
+	})
+
+	r.GET("/car/:id", func(c *gin.Context) {
+		id := c.Param("id")
+
+		// Get specific Car from Car Inventory
+		resp, err := http.Get(docker_internal_ip + ":5001/car/" + id)
+		if err != nil {
+			log.Fatalln(err)
+		}
+		body, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			log.Fatalln(err)
+		}
+
+		// Convert to Car Structure
+		var car []Car
+		err = json.Unmarshal([]byte(body), &car)
+
+		if err != nil {
+			log.Println("Error Parsing Inventory JSON data - ", err)
+		}
+
+		pretty_inv, err := json.MarshalIndent(car, "", "    ")
+		log.Println(string(pretty_inv))
+
+		c.JSON(200, car[0])
+
 	})
 
 	r.GET("/unlock/:car_id", func(c *gin.Context) {

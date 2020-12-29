@@ -14,13 +14,10 @@ Future<List<Car>> fetchCars() async {
   print(response.body);
 
   if (response.statusCode == 200) {
-    // If the server did return a 200 OK response,
-    // then parse the JSON.
     final json = jsonDecode(response.body);
 
     var car_list = new List<Car>();
-    // The JSON data is an array, so the decoded json is a list.
-    // We will do the loop through this list to parse objects.
+
     if (json != null) {
       json.forEach((element) {
         final car = Car.fromJson(element);
@@ -31,9 +28,7 @@ Future<List<Car>> fetchCars() async {
 
     return car_list;
   } else {
-    // If the server did not return a 200 OK response,
-    // then throw an exception.
-    throw Exception('Failed to load album');
+    throw Exception('Failed to load car list');
   }
 }
 

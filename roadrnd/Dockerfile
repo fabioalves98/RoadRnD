@@ -4,7 +4,7 @@ USER root
 
 
 RUN apk update
-RUN apk add --no-cache git bash
+RUN apk add --no-cache git bash curl
 
 RUN go get -u github.com/gin-gonic/gin
 

@@ -7,9 +7,9 @@ import json
 from bs4 import BeautifulSoup
 import urllib3
 
-# API_LINK = "http://localhost" 
+API_LINK = "http://localhost" 
 # API_LINK = "http://40.115.31.209"
-API_LINK = "http://roadrnd.westeurope.cloudapp.azure.com"
+# API_LINK = "http://roadrnd.westeurope.cloudapp.azure.com"
 
 cars = {
     'Honda' :   ['Civic', 'Accord', 'Brio', 'City', 'Jazz', 'Legend'],
