@@ -18,6 +18,7 @@ class CarView extends StatefulWidget {
 class CarViewState extends State<CarView> {
   bool locked = true;
   int seconds = 0;
+  int cur_price = 0;
   Timer timer;
 
   void startCount() {
@@ -35,6 +36,9 @@ class CarViewState extends State<CarView> {
   void updatePrice() {
     seconds++;
     print(seconds);
+    setState(() {
+      cur_price = seconds * widget.car.price_per_minute;
+    });
   }
 
   void goToPay(BuildContext context) async {
@@ -67,7 +71,7 @@ class CarViewState extends State<CarView> {
               children: [
                 Expanded(
                     child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                       Text(
                         "ID - ${widget.car.id}",
@@ -98,36 +102,55 @@ class CarViewState extends State<CarView> {
                         style: Theme.of(context).textTheme.bodyText1,
                       )
                     ])),
-                OutlineButton(
-                    textColor: Color(0xFF6200EE),
-                    highlightedBorderColor: Colors.black.withOpacity(0.12),
-                    onPressed: () {
-                      if (locked) {
-                        print('Unlock Car - ${widget.car.id}');
-                        startCount();
-                      } else {
-                        print('Lock Car - ${widget.car.id}');
-                        stopCount();
-                      }
-                      setState(() {
-                        locked = !locked;
-                      });
-                    },
-                    child: Text(
-                      locked ? "Unlock" : "Lock",
+                Expanded(
+                    child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Price Counter",
                       style: Theme.of(context).textTheme.bodyText1,
-                    )),
-                OutlineButton(
-                    textColor: Color(0xFF6200EE),
-                    highlightedBorderColor: Colors.black.withOpacity(0.12),
-                    onPressed: () {
-                      print('Pay Car Rent - ${widget.car.id}');
-                      goToPay(context);
-                    },
-                    child: Text(
-                      "Pay",
+                    ),
+                    Text(
+                      locked ? "Unlock" : "$cur_price",
                       style: Theme.of(context).textTheme.bodyText1,
-                    ))
+                    )
+                  ],
+                )),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    OutlineButton(
+                        textColor: Color(0xFF6200EE),
+                        highlightedBorderColor: Colors.black.withOpacity(0.12),
+                        onPressed: () {
+                          if (locked) {
+                            print('Unlock Car - ${widget.car.id}');
+                            startCount();
+                          } else {
+                            print('Lock Car - ${widget.car.id}');
+                            stopCount();
+                          }
+                          setState(() {
+                            locked = !locked;
+                          });
+                        },
+                        child: Text(
+                          locked ? "Unlock" : "Lock",
+                          style: Theme.of(context).textTheme.bodyText1,
+                        )),
+                    OutlineButton(
+                        textColor: Color(0xFF6200EE),
+                        highlightedBorderColor: Colors.black.withOpacity(0.12),
+                        onPressed: () {
+                          print('Pay Car Rent - ${widget.car.id}');
+                          goToPay(context);
+                        },
+                        child: Text(
+                          "Pay",
+                          style: Theme.of(context).textTheme.bodyText1,
+                        ))
+                  ],
+                ),
               ],
             )));
   }
