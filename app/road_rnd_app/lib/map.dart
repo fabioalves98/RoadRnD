@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:road_rnd_app/car.dart';
 import 'dart:convert';
 
 import 'global.dart';

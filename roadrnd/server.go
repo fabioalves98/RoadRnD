@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -28,6 +29,10 @@ type CarLocation struct {
 	Car_id   string
 	Location string
 	Status   string
+}
+
+type Payment struct {
+	Payment_id string
 }
 
 func main() {
@@ -135,6 +140,35 @@ func main() {
 		log.Println(body)
 
 		c.String(http.StatusOK, "Car Unlocked")
+	})
+
+	r.GET("/create_payment", func(c *gin.Context) {
+		url := "http://roadrnd.westeurope.cloudapp.azure.com:5006/payment"
+
+		var jsonStr = []byte("{\"client_id\": \"LD-34-CV\", \"transaction\" : {\"total\" : \"24.90\", \"currency\": \"EUR\"}, \"item_list\" : [{\"item_name\": \"Rental\", \"item_price\" : \"24.90\"}]}")
+		req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonStr))
+		req.Header.Set("Content-Type", "application/json")
+
+		client := &http.Client{}
+		resp, err := client.Do(req)
+		if err != nil {
+			panic(err)
+		}
+		defer resp.Body.Close()
+
+		fmt.Println("response Status:", resp.Status)
+		fmt.Println("response Headers:", resp.Header)
+		body, _ := ioutil.ReadAll(resp.Body)
+		fmt.Println("response Body:", string(body))
+
+		var pay Payment
+		err = json.Unmarshal([]byte(body), &pay)
+
+		if err != nil {
+			log.Println("Error Parsing Inventory JSON data - ", err)
+		}
+
+		c.String(http.StatusOK, pay.Payment_id)
 	})
 
 	r.GET("/payment", func(c *gin.Context) {

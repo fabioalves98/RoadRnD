@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'dart:async';
 
+import 'global.dart';
 import 'car.dart';
 
 class CarView extends StatefulWidget {
@@ -35,12 +37,21 @@ class CarViewState extends State<CarView> {
     print(seconds);
   }
 
-  void goToPay(BuildContext context) {
+  void goToPay(BuildContext context) async {
+    print("Executing Payment");
+
+    final response = await http.get(Global.lt_link + '/create_payment');
+
+    print(response.body);
+
+    String payment_id = response.body;
+
     Navigator.of(context)
         .push(MaterialPageRoute<void>(builder: (BuildContext context) {
       return InAppWebView(
         initialUrl:
-            'http://roadrnd.westeurope.cloudapp.azure.com:5006/approve/PAYMENT-BDSk84729DHDSA7JDG6',
+            'http://roadrnd.westeurope.cloudapp.azure.com:5006/approve/' +
+                payment_id,
       );
     }));
   }
