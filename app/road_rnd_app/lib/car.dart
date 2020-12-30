@@ -2,6 +2,7 @@ class Car {
   final String brand;
   final String model;
   final String id;
+  final String photo;
   final String fuel_type;
   final int kms;
   final int num_of_seats;
@@ -13,6 +14,7 @@ class Car {
       {this.brand,
       this.model,
       this.id,
+      this.photo,
       this.fuel_type,
       this.kms,
       this.num_of_seats,
@@ -25,6 +27,7 @@ class Car {
         brand: json['Brand'],
         model: json['Model'],
         id: json['Id'],
+        photo: json['Photo'],
         fuel_type: json['FuelType'],
         kms: json['Kms'],
         num_of_seats: json['Num_of_seats'],

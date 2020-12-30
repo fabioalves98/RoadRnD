@@ -119,6 +119,7 @@ class CarViewState extends State<CarView> {
             padding: const EdgeInsets.all(32),
             child: Column(
               children: [
+                Image.network("${widget.car.photo}"),
                 Expanded(
                     child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,

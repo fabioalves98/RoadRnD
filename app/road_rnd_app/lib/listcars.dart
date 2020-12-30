@@ -58,8 +58,8 @@ class _ListCarsState extends State<ListCars> {
                   children: cars
                       .map(
                         (Car car) => ListTile(
-                          title: Text(car.brand),
-                          subtitle: Text("${car.model}"),
+                          title: Text(car.brand + " ${car.model}",
+                              style: Theme.of(context).textTheme.bodyText1),
                           onTap: () {
                             print('Taped');
                             goToCar(context, car);
