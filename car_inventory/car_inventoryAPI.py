@@ -50,6 +50,10 @@ class MongoAPI:
         output = {'Status': 'Successfully Deleted' if response.deleted_count > 0 else "Document not found."}
         return output
 
+    def clear(self):
+        output = self.collection.delete_many({})
+        return output
+
     def findID(self, id):
         documents = self.collection.find({"id" : id})
         output = [{item: data[item] for item in data if item != '_id'} for data in documents]
@@ -93,6 +97,18 @@ def get_brands():
     return Response(response=json.dumps(brands),
                     status=200,
                     mimetype='application/json')
+
+
+@app.route('/clean', methods=['GET'])
+def get_clean():
+    db = {
+        "database" : "carInventory",
+        "collection" : "cars"
+    }
+    obj1 = MongoAPI(db)
+    response = obj1.clear()
+    return Response(response=response,
+                    status=200)
 
 @app.route('/<brand>/models', methods=['GET'])
 def get_models(brand):
