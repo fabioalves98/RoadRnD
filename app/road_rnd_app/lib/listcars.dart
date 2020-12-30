@@ -49,7 +49,6 @@ class _ListCarsState extends State<ListCars> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text('RoadRnD')),
         body: FutureBuilder(
             future: fetchCars(),
             builder: (BuildContext context, AsyncSnapshot<List<Car>> snapshot) {

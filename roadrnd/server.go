@@ -31,7 +31,12 @@ type CarLocation struct {
 	Status   string
 }
 
-type Payment struct {
+type PaymentInfo struct {
+	CarID string
+	Price string
+}
+
+type PaymentID struct {
 	Payment_id string
 }
 
@@ -177,10 +182,29 @@ func main() {
 		c.String(http.StatusOK, "Car Unlocked")
 	})
 
-	r.GET("/create_payment", func(c *gin.Context) {
+	r.POST("/create_payment", func(c *gin.Context) {
+		// Obtain payment info from app
+		body, err := ioutil.ReadAll(c.Request.Body)
+		if err != nil {
+			panic(err)
+		}
+
+		var paymentInfo PaymentInfo
+		err = json.Unmarshal([]byte(body), &paymentInfo)
+		if err != nil {
+			log.Println("Error Parsing Inventory JSON data - ", err)
+		}
+
+		pretty, err := json.MarshalIndent(paymentInfo, "", "    ")
+		log.Println(string(pretty))
+
+		// Make POST request to payment service to obtain payment link
 		url := "http://roadrnd.westeurope.cloudapp.azure.com:5006/payment"
 
-		var jsonStr = []byte("{\"client_id\": \"LD-34-CV\", \"transaction\" : {\"total\" : \"24.90\", \"currency\": \"EUR\"}, \"item_list\" : [{\"item_name\": \"Rental\", \"item_price\" : \"24.90\"}]}")
+		var jsonStr = []byte("{\"client_id\": \"" + paymentInfo.CarID +
+			"\", \"transaction\" : {\"total\" : \"" + paymentInfo.Price +
+			"\", \"currency\": \"EUR\"}, \"item_list\" : [{\"item_name\": \"Rental - " +
+			paymentInfo.CarID + "\",\"item_price\" : \"" + paymentInfo.Price + "\"}]}")
 		req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonStr))
 		req.Header.Set("Content-Type", "application/json")
 
@@ -193,10 +217,10 @@ func main() {
 
 		fmt.Println("response Status:", resp.Status)
 		fmt.Println("response Headers:", resp.Header)
-		body, _ := ioutil.ReadAll(resp.Body)
+		body, _ = ioutil.ReadAll(resp.Body)
 		fmt.Println("response Body:", string(body))
 
-		var pay Payment
+		var pay PaymentID
 		err = json.Unmarshal([]byte(body), &pay)
 
 		if err != nil {
@@ -204,19 +228,6 @@ func main() {
 		}
 
 		c.String(http.StatusOK, pay.Payment_id)
-	})
-
-	r.GET("/payment", func(c *gin.Context) {
-		// Obtain required parameters to make request to payment service
-		client_id := c.DefaultQuery("client_id", "123")
-		transaction := c.DefaultQuery("transaction", "0")
-
-		log.Println(client_id)
-		log.Println(transaction)
-
-		request_link := "http://roadrnd.westeurope.cloudapp.azure.com:5006/approve/PAYMENT-BDSk84729DHDSA7JDG6"
-
-		c.String(http.StatusOK, request_link)
 	})
 
 	r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")

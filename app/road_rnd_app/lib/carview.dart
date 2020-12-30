@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'dart:async';
+import 'dart:convert';
 
 import 'global.dart';
 import 'car.dart';
@@ -17,46 +18,95 @@ class CarView extends StatefulWidget {
 
 class CarViewState extends State<CarView> {
   bool locked = true;
+  bool used = false;
   int seconds = 0;
-  int cur_price = 0;
+  double curPrice = 0;
   Timer timer;
 
   void startCount() {
     timer = Timer.periodic(
         Duration(milliseconds: 1000), (Timer t) => updatePrice());
+    setState(() {
+      used = true;
+    });
   }
 
   void stopCount() {
     timer.cancel();
-    int price = seconds * widget.car.price_per_minute;
     seconds = 0;
-    print("Preço Final - $price");
   }
 
   void updatePrice() {
     seconds++;
-    print(seconds);
     setState(() {
-      cur_price = seconds * widget.car.price_per_minute;
+      curPrice = seconds * widget.car.price_per_minute / 100;
     });
   }
 
   void goToPay(BuildContext context) async {
     print("Executing Payment");
 
-    final response = await http.get(Global.lt_link + '/create_payment');
+    final response = await http.post(
+      Global.lt_link + '/create_payment',
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(
+          <String, String>{'CarID': widget.car.id, 'Price': "$curPrice"}),
+    );
 
     print(response.body);
 
-    String payment_id = response.body;
+    String paymentID = response.body;
 
     Navigator.of(context)
         .push(MaterialPageRoute<void>(builder: (BuildContext context) {
       return InAppWebView(
         initialUrl:
-            'http://roadrnd.westeurope.cloudapp.azure.com:5006/approve/$payment_id',
+            'http://roadrnd.westeurope.cloudapp.azure.com:5006/approve/$paymentID',
       );
     }));
+  }
+
+  Row infoEntry(String label, String value) {
+    return Row(children: [
+      Text(label, style: Theme.of(context).textTheme.bodyText1),
+      Expanded(
+        child: Container(
+          color: Colors.white,
+        ),
+      ),
+      Text(value, style: Theme.of(context).textTheme.bodyText2)
+    ]);
+  }
+
+  Column priceCounter() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          "Price Counter",
+          style: Theme.of(context).textTheme.bodyText1,
+        ),
+        Text(
+          (locked && !used) ? "" : "$curPrice €",
+          style: Theme.of(context).textTheme.bodyText1,
+        )
+      ],
+    );
+  }
+
+  void lockUnlock() {
+    if (locked) {
+      print('Unlock Car - ${widget.car.id}');
+      startCount();
+    } else {
+      print('Lock Car - ${widget.car.id}');
+      stopCount();
+    }
+    setState(() {
+      locked = !locked;
+    });
   }
 
   @override
@@ -73,78 +123,29 @@ class CarViewState extends State<CarView> {
                     child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                      Text(
-                        "ID - ${widget.car.id}",
-                        style: Theme.of(context).textTheme.bodyText1,
-                      ),
-                      Text(
-                        "Fuel - ${widget.car.fuel_type}",
-                        style: Theme.of(context).textTheme.bodyText1,
-                      ),
-                      Text(
-                        "Kms - ${widget.car.kms}",
-                        style: Theme.of(context).textTheme.bodyText1,
-                      ),
-                      Text(
-                        "Seats - ${widget.car.num_of_seats}",
-                        style: Theme.of(context).textTheme.bodyText1,
-                      ),
-                      Text(
-                        "Year - ${widget.car.year}",
-                        style: Theme.of(context).textTheme.bodyText1,
-                      ),
-                      Text(
-                        "Owner - ${widget.car.owner}",
-                        style: Theme.of(context).textTheme.bodyText1,
-                      ),
-                      Text(
-                        "Price - ${widget.car.price_per_minute}",
-                        style: Theme.of(context).textTheme.bodyText1,
-                      )
+                      infoEntry("ID", "${widget.car.id}"),
+                      infoEntry("Fuel", "${widget.car.fuel_type}"),
+                      infoEntry("Kms", "${widget.car.kms}"),
+                      infoEntry("Seats", "${widget.car.num_of_seats}"),
+                      infoEntry("Year", "${widget.car.year}"),
+                      infoEntry("Owner", "${widget.car.owner}"),
+                      infoEntry("Price", "${widget.car.price_per_minute}")
                     ])),
-                Expanded(
-                    child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "Price Counter",
-                      style: Theme.of(context).textTheme.bodyText1,
-                    ),
-                    Text(
-                      locked ? "Unlock" : "$cur_price",
-                      style: Theme.of(context).textTheme.bodyText1,
-                    )
-                  ],
-                )),
+                Expanded(child: priceCounter()),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    OutlineButton(
-                        textColor: Color(0xFF6200EE),
-                        highlightedBorderColor: Colors.black.withOpacity(0.12),
-                        onPressed: () {
-                          if (locked) {
-                            print('Unlock Car - ${widget.car.id}');
-                            startCount();
-                          } else {
-                            print('Lock Car - ${widget.car.id}');
-                            stopCount();
-                          }
-                          setState(() {
-                            locked = !locked;
-                          });
-                        },
+                    RaisedButton(
+                        textColor: Colors.black,
+                        onPressed: (locked && used) ? null : lockUnlock,
                         child: Text(
                           locked ? "Unlock" : "Lock",
                           style: Theme.of(context).textTheme.bodyText1,
                         )),
-                    OutlineButton(
-                        textColor: Color(0xFF6200EE),
-                        highlightedBorderColor: Colors.black.withOpacity(0.12),
-                        onPressed: () {
-                          print('Pay Car Rent - ${widget.car.id}');
-                          goToPay(context);
-                        },
+                    RaisedButton(
+                        textColor: Colors.black,
+                        onPressed:
+                            (locked && used) ? () => goToPay(context) : null,
                         child: Text(
                           "Pay",
                           style: Theme.of(context).textTheme.bodyText1,
