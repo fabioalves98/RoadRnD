@@ -5,6 +5,7 @@ import 'dart:convert';
 
 import 'global.dart';
 import 'car.dart';
+import 'dropdown.dart';
 
 Future<List<Car>> fetchCars() async {
   print("Getting cars");
@@ -16,17 +17,15 @@ Future<List<Car>> fetchCars() async {
   if (response.statusCode == 200) {
     final json = jsonDecode(response.body);
 
-    var car_list = new List<Car>();
+    List<Car> carList = [];
 
     if (json != null) {
       json.forEach((element) {
-        final car = Car.fromJson(element);
-        print(car);
-        car_list.add(car);
+        carList.add(Car.fromJson(element));
       });
     }
 
-    return car_list;
+    return carList;
   } else {
     throw Exception('Failed to load car list');
   }
@@ -38,12 +37,77 @@ class ListCars extends StatefulWidget {
 }
 
 class _ListCarsState extends State<ListCars> {
+  List<String> fuelFilterItems = [
+    "Gasoline",
+    "Diesel",
+    "GPL",
+    "Electric",
+    "Hybrid"
+  ];
+  List<DropdownMenuItem<String>> fuelDropDown;
+  String fuelSelected;
+
+  List<DropdownMenuItem<String>> buildDropDown(List listItems) {
+    List<DropdownMenuItem<String>> items = [];
+    for (String listItem in listItems) {
+      items.add(
+        DropdownMenuItem(
+          child: Text(listItem),
+          value: listItem,
+        ),
+      );
+    }
+    return items;
+  }
+
+  Widget filterDialog(BuildContext context) {
+    return AlertDialog(
+      actionsPadding: EdgeInsets.all(2),
+      title: Text('Car Filters'),
+      content: new Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Text("Fuel"),
+                Expanded(
+                  child: Container(
+                    color: Colors.white,
+                  ),
+                ),
+                DropDownList()
+              ],
+            ),
+            Row(children: [Text("Brand")]),
+            Row(children: [Text("Year")]),
+            Row(children: [Text("Price")]),
+          ]),
+      actions: [
+        RaisedButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          color: Colors.blue,
+          child: Text('Search'),
+        ),
+      ],
+    );
+  }
+
   void goToCar(BuildContext context, Car car) {
     Navigator.of(context).push(MaterialPageRoute<void>(
       builder: (BuildContext context) {
         return CarView(car: car);
-      }, // ..
+      },
     ));
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fuelDropDown = buildDropDown(fuelFilterItems);
+    fuelSelected = fuelFilterItems[0];
   }
 
   @override
@@ -60,8 +124,10 @@ class _ListCarsState extends State<ListCars> {
                         (Car car) => ListTile(
                           title: Text(car.brand + " ${car.model}",
                               style: Theme.of(context).textTheme.bodyText1),
+                          subtitle: Text(
+                              "X meters | ${car.price_per_minute} €/m",
+                              style: Theme.of(context).textTheme.bodyText2),
                           onTap: () {
-                            print('Taped');
                             goToCar(context, car);
                           },
                         ),
@@ -71,6 +137,14 @@ class _ListCarsState extends State<ListCars> {
               } else {
                 return Center(child: CircularProgressIndicator());
               }
-            }));
+            }),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            showDialog(
+                context: context,
+                builder: (BuildContext context) => filterDialog(context));
+          },
+          child: Icon(Icons.filter_list),
+        ));
   }
 }

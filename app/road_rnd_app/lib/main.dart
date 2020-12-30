@@ -60,8 +60,8 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
           primaryColor: Colors.blue,
           textTheme: TextTheme(
-              bodyText1: TextStyle(fontSize: 25.0, color: Colors.black),
-              bodyText2: TextStyle(fontSize: 20.0, color: Colors.black54))),
+              bodyText1: TextStyle(fontSize: 20.0, color: Colors.black),
+              bodyText2: TextStyle(fontSize: 16.0, color: Colors.black54))),
     );
   }
 }
