@@ -3,8 +3,12 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 
 import 'global.dart';
+import 'browser.dart';
 
 class Login extends StatefulWidget {
+  final ChromeSafariBrowser browser =
+      new MyChromeSafariBrowser(new MyInAppBrowser());
+
   @override
   LoginState createState() => LoginState();
 }
@@ -27,10 +31,9 @@ class LoginState extends State<Login> {
             builder: (BuildContext context, AsyncSnapshot snapshot) {
               if (snapshot.hasData) {
                 String url = snapshot.data;
-                return InAppWebView(initialUrl: url);
-              } else {
-                return CircularProgressIndicator();
+                widget.browser.open(url: url);
               }
+              return CircularProgressIndicator();
             }),
       ),
     );

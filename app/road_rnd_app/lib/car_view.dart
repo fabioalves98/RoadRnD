@@ -90,16 +90,45 @@ class CarViewState extends State<CarView> {
         ),
         Text(
           (locked && !used) ? "" : "$curPrice €",
-          style: Theme.of(context).textTheme.bodyText1,
+          style: Theme.of(context).textTheme.bodyText2,
         )
       ],
     );
   }
 
-  void lockUnlock() {
+  Widget unlockDialog(BuildContext context) {
+    return AlertDialog(
+      title: Text('Car Unlock'),
+      content: new Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [Text("Use NFC to Unlock the car")]),
+      actions: [
+        FlatButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          textColor: Theme.of(context).primaryColor,
+          child: Text('Close'),
+        ),
+      ],
+    );
+  }
+
+  void unlockCar() {
+    print("Make post to unlock service");
+  }
+
+  void lockUnlock() async {
     if (locked) {
       print('Unlock Car - ${widget.car.id}');
-      startCount();
+      await showDialog(
+              context: context,
+              builder: (BuildContext context) => unlockDialog(context))
+          .then((value) {
+        unlockCar();
+        startCount();
+      });
     } else {
       print('Lock Car - ${widget.car.id}');
       stopCount();
@@ -116,7 +145,7 @@ class CarViewState extends State<CarView> {
           title: Text('${widget.car.brand} ${widget.car.model}'),
         ),
         body: Container(
-            padding: const EdgeInsets.all(32),
+            padding: EdgeInsets.all(32),
             child: Column(
               children: [
                 Image.network("${widget.car.photo}"),
@@ -130,21 +159,22 @@ class CarViewState extends State<CarView> {
                       infoEntry("Seats", "${widget.car.num_of_seats}"),
                       infoEntry("Year", "${widget.car.year}"),
                       infoEntry("Owner", "${widget.car.owner}"),
-                      infoEntry("Price", "${widget.car.price_per_minute}")
+                      infoEntry(
+                          "Price", "${widget.car.price_per_minute / 100} €/m")
                     ])),
                 Expanded(child: priceCounter()),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     RaisedButton(
-                        textColor: Colors.black,
+                        color: Colors.blue,
                         onPressed: (locked && used) ? null : lockUnlock,
                         child: Text(
                           locked ? "Unlock" : "Lock",
                           style: Theme.of(context).textTheme.bodyText1,
                         )),
                     RaisedButton(
-                        textColor: Colors.black,
+                        color: Colors.blue,
                         onPressed:
                             (locked && used) ? () => goToPay(context) : null,
                         child: Text(
