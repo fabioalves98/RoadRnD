@@ -106,21 +106,23 @@ body {
     function testAPI() {
       FB.api('/me',{fields: 'name, email, picture'}, function(response) {
         console.log('Logged in with Facebook as: ' + response.name);
-        $.post("http://localhost:5005/oauth/login",
+        $.post("http://roadrnd.westeurope.cloudapp.azure.com:5005/oauth/login",
             {
               "id": response.id,
               "userName" : response.name,
               "image" : response.picture.data.url,
               "mail": response.email,
               "client_id": "{{client_id}}",
-              "redirect_url" : "{{redirect_url}}"
+              "redirect_url" : "{{redirect_url}}",
+              "user_key"    : "{{user_key}}"
             },
             function(data, status){
               var dataJsonF = data;  
               var userJsonF = dataJsonF.user_info;  
               console.log('Success redirect to url  ' + dataJsonF.redirect_url);
               //window.open(dataJson.redirect_url,"_self");
-              location.replace(dataJson.redirect_url);
+              //location.replace(dataJson.redirect_url);
+              alert("Login as " + userJsonF.user_name + "\n Please close the browser to continue.");
               console.log("Add items to localStorage");
               localStorage.setItem("user_name", userJsonF.user_name);
               localStorage.setItem("client_id", userJsonF.client_id);
@@ -140,14 +142,15 @@ body {
   <script>
     function onSuccess(googleUser) {
       console.log('Logged in with Google as: ' + googleUser.getBasicProfile().getName());
-      $.post("http://localhost:5005/oauth/login",
+      $.post("http://roadrnd.westeurope.cloudapp.azure.com:5005/oauth/login",
       {
         "id": googleUser.getBasicProfile().getId(),
         "userName" : googleUser.getBasicProfile().getName(),
         "image" : googleUser.getBasicProfile().getImageUrl(),
         "mail": googleUser.getBasicProfile().getEmail(),
         "client_id": "{{client_id}}",
-        "redirect_url" : "{{redirect_url}}"
+        "redirect_url" : "{{redirect_url}}",
+        "user_key"    : "{{user_key}}"
       },
       function(data, status){
         
@@ -155,7 +158,8 @@ body {
         var userJson = dataJson.user_info;  
         console.log('Success redirect to url  ' + dataJson.redirect_url);
         //window.open(dataJson.redirect_url,"_self");
-        location.replace(dataJson.redirect_url);
+        //location.replace(dataJson.redirect_url);
+        alert("Login as " + userJson.user_name + "\n Please close the browser to continue.");
         console.log("Add items to localStorage");
         localStorage.setItem("user_name", userJson.user_name);
         localStorage.setItem("client_id", userJson.client_id);

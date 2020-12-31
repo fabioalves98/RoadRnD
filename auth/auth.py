@@ -43,6 +43,14 @@ class MongoAPI:
         return output
 
 
+    def upsertUserInfo(self, filt, data):
+        log.info('Updating Data')
+        #options = { "upsert": true }
+        updated_data = {"$set": data}
+        response = self.collection.update_one(filt, updated_data, upsert=True)
+        output = {'Status': 'Successfully Updated' if response.modified_count > 0 else "Nothing was updated."}
+        return output
+
     def upsert(self, filt, data):
         log.info('Updating Data')
         #options = { "upsert": true }
@@ -63,6 +71,11 @@ class MongoAPI:
         log.info('Deleting Data')
         response = self.collection.delete_one(data)
         output = {'Status': 'Successfully Deleted' if response.deleted_count > 0 else "Document not found."}
+        return output
+
+    def find_user_key(self, user_key):
+        documents = self.collection.find({"user_key" : user_key})
+        output = [{item: data[item] for item in data if item != '_id'} for data in documents]
         return output
 
     def findAuth_Code(self, auth_c):
@@ -196,10 +209,32 @@ def base():
 def get_authorize():
     client_id = request.args.get('client_id')
     redirect_url = request.args.get('redirect_url')
-    #code_challenge = request.args.get('code_challenge')
-    return render_template('index.html', client_id = client_id, redirect_url = redirect_url)
+    user_key = request.args.get('user_key')
+
+    return render_template('index.html', client_id = client_id, redirect_url = redirect_url, user_key = user_key)
+
+@app.route('/oauth/credentials', methods=['GET'])
+def get_credentials():
+    client_id = request.args.get('client_id')
+    user_key = request.args.get('user_key')
+
+    db = {
+        "database" : "auth",
+        "collection" : "UserInfo"
+    }
+    obj1 = MongoAPI(db)
+    #Find one
+    user_info = obj1.find_user_key(user_key)
+
+    if(len(user_info) == 0):
+        return Response(response=json.dumps("User doesn't exist"),
+                    status=403,
+                    mimetype='application/json')
 
 
+    return Response(response=json.dumps(user_info),
+                    status=200,
+                    mimetype='application/json')
 
 @app.route('/oauth/login', methods=['POST'])
 def post_success():
@@ -209,14 +244,26 @@ def post_success():
     user_name = data['userName']
     image = data['image']
     mail = data['mail']
+    user_key = data['user_key']
     authorization_code = generate_authorization_code(data["client_id"], data["redirect_url"], user_id)
     user_info = {
+        "user_key"  : user_key,
         "auth_code" : authorization_code,
         "client_id" : user_id,
         "user_name" : user_name,
         "image"     : image,
-        "mail"      : mail
+        "mail"      : mail,
+        "auth_code" : authorization_code
     }
+
+    db = {
+        "database" : "auth",
+        "collection" : "UserInfo"
+    }
+    obj1 = MongoAPI(db)
+    #upsert in db
+    response = obj1.upsert({"user_key" :user_key }, user_info)
+
     response = {
         "redirect_url" : data["redirect_url"],
         "user_info"     : user_info
