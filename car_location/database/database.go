@@ -74,6 +74,7 @@ func InitDB() {
 
 }
 
+
 func ClearDB() {
 
 	statement := `DELETE FROM CarLocation`
@@ -87,8 +88,6 @@ func TestDB() {
 	if err != nil {
 		panic(err)
 	}
-
-	fmt.Printf("Current values in database\n")
 
 	for rows.Next() {
 		var id string

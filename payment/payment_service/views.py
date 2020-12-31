@@ -10,7 +10,6 @@ payment = Blueprint('payment_service', __name__)
 
 db = Database() 
 
-## TODO: create DELETE  for clients
 @payment.route('/client/<client_id>', methods=["GET"])
 def get_client(client_id):
 
@@ -108,7 +107,6 @@ def create_payment():
         return Response(response=json.dumps({"Error" : e}), status=500, mimetype='application/json')
 
 
-    # return redirect(url_for("/approve"), payment_info=temporary_payment_object)
     return Response(response=json.dumps({"payment_id": payment["id"]}), status=200)
 
 @payment.route('/approve/<payment_id>')
@@ -180,4 +178,13 @@ def execute_payment():
     except Exception:
         print("No access token. Assuming credit card and not RoadRnD funds", flush=True)
 
+    db.updatePaymentStatus(payment_id, "approved")
     return Response(response=json.dumps({"OK" : "Payment executed and approved"}), status=200, mimetype='application/json')
+
+
+@payment.route('/finish/<payment_id>', methods=['GET'])
+def finish_payment(payment_id):
+    
+    payment = db.getPayments(payment_id)
+    params = {"payment_state": payment["state"]}
+    return render_template("finished.html", payment_info=params)

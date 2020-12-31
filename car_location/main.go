@@ -16,11 +16,13 @@ func main() {
 
 	fmt.Printf("Current values in database FROM MAIN\n")
 
-	// database.ClearDB()
 	// database.InsertDummyDB()
 	database.TestDB()
+	database.ClearDB()
 
-	// TODO: Add search by location. Add Delete methods
+	fmt.Printf("Current values in database after clear\n")
+	database.TestDB()
+
 
 	r := gin.Default()
 	// Creating all routes
@@ -33,7 +35,13 @@ func main() {
 	r.GET("/car_status/:car_id", getCarStatus)
 	r.PUT("/car_status/:car_id", updateCarStatus)
 
+	r.GET("/clear", clearDB)
+
 	r.Run(":5002") // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
+}
+
+func clearDB(c *gin.Context){
+	database.ClearDB()
 }
 
 func getCarInformation(c *gin.Context) {

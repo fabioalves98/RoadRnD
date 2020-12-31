@@ -92,7 +92,11 @@ function presentFinalPopup() {
     alert.header = 'Payment complete!';
     alert.subHeader = 'Your payment was successful and you will soon be redirected';
     // alert.message = 'This is an alert message.';
-    alert.buttons = ['OK'];
+    alert.buttons = [{text: 'OK', handler: () => {
+        console.log("here");
+        finishPayment();
+    }
+    }];
 
     document.body.appendChild(alert);
     return alert.present();
@@ -104,7 +108,11 @@ function presentErrorPopup() {
     alert.header = 'Something went wrong, please try again.';
     alert.subHeader = 'An error occured during the payment. Please try again later or contact us for more information!';
     // alert.message = 'This is an alert message.';
-    alert.buttons = ['Confirm'];
+    alert.buttons = [{text: 'Confirm', handler: () => {
+        console.log("here");
+        finishPayment();
+    }
+    }];
 
     document.body.appendChild(alert);
     return alert.present();
@@ -130,6 +138,24 @@ function gotData(data) {
         }
     }
     xhr.send(data_json);
+}
+
+function finishPayment(){
+    // var xhr = new XMLHttpRequest();
+    var pay_id_url = window.location.pathname.split("/");
+    var payment_id = pay_id_url.pop() || pay_id_url.pop()
+    // xhr.open("GET", '/finish', true);
+    // xhr.setRequestHeader("Content-Type", "application/json");
+    // xhr.onreadystatechange = function () { 
+    //     if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+    //         console.log("called");
+    //     }else if(this.readyState === XMLHttpRequest.DONE && this.status === 500){
+    //         console.log("called, error");
+    //     }
+    // }
+    // xhr.send();
+    window.location.pathname = "/finish/" + payment_id ;
+
 }
 
 function gotDataFunds() {
