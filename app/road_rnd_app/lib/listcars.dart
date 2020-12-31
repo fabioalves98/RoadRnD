@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:road_rnd_app/carview.dart';
 import 'dart:convert';
 
 import 'global.dart';
+import 'car_view.dart';
 import 'car.dart';
 import 'dropdown.dart';
 

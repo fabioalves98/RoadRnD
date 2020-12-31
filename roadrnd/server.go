@@ -49,7 +49,7 @@ func main() {
 	r.GET("/login", func(c *gin.Context) {
 		// Obtain required parameters to make request to OAuth service
 		client_id := c.DefaultQuery("client_id", "123")
-		redirect_url := c.DefaultQuery("redirect_url", "placeholder_url")
+		redirect_url := c.DefaultQuery("redirect_url", "placeholder_url")=
 
 		log.Println(client_id)
 		log.Println(redirect_url)
@@ -142,47 +142,9 @@ func main() {
 
 	})
 
-	r.GET("/unlock/:car_id", func(c *gin.Context) {
-		// Call Unlock Service to Unlock a certain Car
-		values := map[string]string{"id": c.Param("car_id"), "tag": "tag1"}
-
-		json_values, _ := json.Marshal(values)
-
-		resp, err := http.Post("http://172.18.0.1:5003/unlock", "application/json", bytes.NewBuffer(json_values))
-		if err != nil {
-			log.Fatalln(err)
-		}
-		body, err := ioutil.ReadAll(resp.Body)
-		if err != nil {
-			log.Fatalln(err)
-		}
-
-		log.Println(body)
-
-		c.String(http.StatusOK, "Car Unlocked")
-	})
-
-	r.GET("/lock/:car_id", func(c *gin.Context) {
-		// Call Unlock Service to Unlock a certain Car
-		values := map[string]string{"id": c.Param("car_id"), "tag": "tag1"}
-
-		json_values, _ := json.Marshal(values)
-
-		resp, err := http.Post("http://172.18.0.1:5003/lock", "application/json", bytes.NewBuffer(json_values))
-		if err != nil {
-			log.Fatalln(err)
-		}
-		body, err := ioutil.ReadAll(resp.Body)
-		if err != nil {
-			log.Fatalln(err)
-		}
-
-		log.Println(body)
-
-		c.String(http.StatusOK, "Car Unlocked")
-	})
-
 	r.POST("/create_payment", func(c *gin.Context) {
+		log.Println("Create Payment endpoint")
+
 		// Obtain payment info from app
 		body, err := ioutil.ReadAll(c.Request.Body)
 		if err != nil {
