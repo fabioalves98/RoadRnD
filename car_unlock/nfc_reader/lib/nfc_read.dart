@@ -63,83 +63,83 @@ class NFCRead {
     }
   }
 
-  Future<String> unlock(String id, String tag) async {
+  Future<String> unlock(String id, String tag, String token) async {
     print("Unlock");
     final response = await http.post(host + '/unlock',
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
-        body: jsonEncode(<String, String>{'id': id, 'tag': tag}));
+        body: jsonEncode(<String, String>{'id': id, 'tag': tag, 'at': token}));
 
     if (response.statusCode == 200) {
       return response.body;
     } else {
       print(response.statusCode);
-      return "Error";
+      return response.body;
     }
   }
 
-  Future<String> lock(String id, String tag) async {
+  Future<String> lock(String id, String tag, String token) async {
     print("Lock");
     final response = await http.post(host + '/lock',
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
-        body: jsonEncode(<String, String>{'id': id, 'tag': tag}));
+        body: jsonEncode(<String, String>{'id': id, 'tag': tag, 'at': token}));
 
     if (response.statusCode == 200) {
       return response.body;
     } else {
       print(response.statusCode);
-      return "Error";
+      return response.body;
     }
   }
 
-  Future<String> add(String id, String tag) async {
+  Future<String> add(String id, String tag, String token) async {
     print("Add");
     final response = await http.post(host + '/add',
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
-        body: jsonEncode(<String, String>{'id': id, 'tag': tag}));
+        body: jsonEncode(<String, String>{'id': id, 'tag': tag, 'at': token}));
 
     if (response.statusCode == 200) {
       return response.body;
     } else {
       print(response.statusCode);
-      return "Error";
+      return response.body;
     }
   }
 
-  Future<String> delete(String id) async {
+  Future<String> delete(String id, String token) async {
     print("Delete");
     final response = await http.post(host + '/delete',
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
-        body: jsonEncode(<String, String>{'id': id}));
+        body: jsonEncode(<String, String>{'id': id, 'at': token}));
 
     if (response.statusCode == 200) {
       return response.body;
     } else {
       print(response.statusCode);
-      return "Error";
+      return response.body;
     }
   }
 
-  Future<String> updateTag(String id, String tag) async {
+  Future<String> updateTag(String id, String tag, String token) async {
     print("Update tag");
     final response = await http.post(host + '/updateTag',
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
-        body: jsonEncode(<String, String>{'id': id, 'tag': tag}));
+        body: jsonEncode(<String, String>{'id': id, 'tag': tag, 'at': token}));
 
     if (response.statusCode == 200) {
       return response.body;
     } else {
       print(response.statusCode);
-      return "Error";
+      return response.body;
     }
   }
 }

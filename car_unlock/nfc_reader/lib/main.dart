@@ -42,7 +42,7 @@ class _MainAppState extends State<MainApp> with SingleTickerProviderStateMixin {
                       ); */
                       return FutureBuilder(
                           /* Dummy unlock test */
-                          future: nfc.unlock("AA-01-AA", "tag1"),
+                          future: nfc.unlock("AA-01-AA", "tag1", "token"),
                           builder: (BuildContext context,
                               AsyncSnapshot<String> snapshot) {
                             if (snapshot.hasData) {
