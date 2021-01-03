@@ -52,10 +52,10 @@ class Database:
             # TODO: Fix the item list here.
             ts = time.time()
             p = (timestampToDateTime(ts), timestampToDateTime(ts),)
-            c.execute('''INSERT INTO PAYMENTS VALUES ('PAYMENT-BDSk84729DHDSA7JDG6', '12.98', 'EUR', 'Rental:12.98', ?, ?, 'created', '1234567')''', p)
+            c.execute('''INSERT INTO PAYMENTS VALUES ('PAYMENT-BDSk84729DHDSA7JDG6', '12.98', 'EUR', 'Rental:12.98', ?, ?, 'approved', '1234567')''', p)
             ts = time.time()
             p = (timestampToDateTime(ts), timestampToDateTime(ts),)
-            c.execute('''INSERT INTO PAYMENTS VALUES ('PAYMENT-BDSk88929DHDSA7JDG6', '28.90', 'EUR', 'Rental:28.90', ?, ?, 'created', '1234569')''', p)
+            c.execute('''INSERT INTO PAYMENTS VALUES ('PAYMENT-BDSk88929DHDSA7JDG6', '28.90', 'EUR', 'Rental:28.90', ?, ?, 'approved', '1234567')''', p)
             connection.commit()
         # content = self.c.execute('SELECT * FROM CLIENT_BALANCE')
         # for c in content:
@@ -97,7 +97,7 @@ class Database:
         if not payment_id:
             content = c.execute('SELECT * FROM PAYMENTS')
             for cd in content:
-                payment = {"id": cd[0], "item_list" : stringToItemlist(cd[3]), "total": cd[1], "currency": cd[2], "total_tax": 0, "client_id": cd[7], 'state': cd[6]}
+                payment = {"id": cd[0], "item_list" : stringToItemlist(cd[3]), "total": cd[1], "currency": cd[2], "total_tax": 0, "client_id": cd[7], 'state': cd[6], 'time': cd[5]}
                 pays.append(payment)
             c.close()
             connection.close()
@@ -105,7 +105,7 @@ class Database:
         p = (payment_id, )
         content = c.execute('SELECT * FROM PAYMENTS WHERE payment_id=?', p)
         for cd in content:
-            payment = {"id": cd[0], "item_list" : stringToItemlist(cd[3]), "total": cd[1], "currency": cd[2], "total_tax": 0, "client_id": cd[7], 'state': cd[6]}
+            payment = {"id": cd[0], "item_list" : stringToItemlist(cd[3]), "total": cd[1], "currency": cd[2], "total_tax": 0, "client_id": cd[7], 'state': cd[6], 'time': cd[5]}
             c.close()
             connection.close()
             return payment
@@ -113,6 +113,19 @@ class Database:
         connection.close()
         return None
 
+    def getClientPayments(self, client_id):
+        connection, c = self.getContext()
+        pays = []
+        p = (client_id, )
+        content = c.execute('SELECT * FROM PAYMENTS WHERE client_id=?', p)
+        for cd in content:
+            payment = {"id": cd[0], "item_list" : stringToItemlist(cd[3]), "total": cd[1], "currency": cd[2], "total_tax": 0, "client_id": cd[7], 'state': cd[6], 'time': cd[5]}    
+            pays.append(payment)
+
+        c.close()
+        connection.close()
+        return pays
+    
     def deletePayment(self, payment_id):
         connection, c = self.getContext()
         p = (payment_id, )

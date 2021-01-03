@@ -158,10 +158,10 @@ def execute_payment():
             payment_total = convertCurrency(payment["currency"], client_acc["currency"], payment_total)
 
         # Proceed with payment, or not
-        new_balance = str(float(client_acc["balance"]) - payment_total)
+        new_balance = float(client_acc["balance"]) - payment_total
 
         if new_balance >= 0:
-            if not db.updateClientFunds(client_acc["id"], new_balance):
+            if not db.updateClientFunds(client_acc["id"], str(new_balance)):
                 return Response(response=json.dumps({"Error" : "Couldn't update client balance!"}), status=500, mimetype='application/json')
             payment_status = 'approved'
         
@@ -175,7 +175,8 @@ def execute_payment():
             return Response(response=json.dumps({"OK" : "Payment executed and approved"}), status=200, mimetype='application/json')
 
 
-    except Exception:
+    except Exception as e:
+        print(e, flush=True)
         print("No access token. Assuming credit card and not RoadRnD funds", flush=True)
 
     db.updatePaymentStatus(payment_id, "approved")
@@ -188,3 +189,19 @@ def finish_payment(payment_id):
     payment = db.getPayments(payment_id)
     params = {"payment_state": payment["state"]}
     return render_template("finished.html", payment_info=params)
+
+@payment.route('/profile/<client_id>', methods=['GET'])
+def client_profile(client_id):
+
+    # get clients payments -> all payments, values and status
+    clients_payments = db.getClientPayments(client_id)
+    # print(clients_payments[0]["time"], flush=True)
+
+    # get client -> for funds and currency
+    client = db.getClients(client_id)
+    # set params
+    params = {"client_funds": client["balance"], "client_currency": client["currency"], "payments": clients_payments}
+    
+    #render profile.html with params
+    return render_template("profile.html", params=params)
+

@@ -38,6 +38,19 @@
 			font-size: 18px;
 			text-align: center;
 		}
+
+        .icon {
+            display: inline-block;
+            font-size: 25px;
+            font-weight: "bold";
+            color: #444444;
+            vertical-align: middle;
+        }
+
+        .text {
+            display: inline-block;
+            vertical-align: middle;
+        }
 	</style>
 
 </head>
@@ -48,9 +61,15 @@
 	<ion-app>
 		<ion-header>
 			<ion-toolbar color="primary" mode="ios">
+				<ion-buttons slot="primary">
+					<ion-button id="profile-button">
+					  <ion-icon slot="icon-only" name="person-circle"></ion-icon> 
+					</ion-button>
+				  </ion-buttons>
 				<ion-title> Sale </ion-title>
 			</ion-toolbar>
 		</ion-header>
+		<div id="client-id" style="display: none">{{ payment_info.client_id}}</div>
 		{% if payment_info.total is defined %}
 
 		<ion-content>
@@ -63,12 +82,16 @@
 			<ion-list>
 				{% for item in payment_info.item_list %}
 				<ion-item>
-					<ion-label>
+					
+					<!-- <ion-label>
 						<h2 class="item-name">{{ item.item_name }} </h2>
-					</ion-label>
+					</ion-label> -->
+
+					<ion-icon name="car" class="icon ion-ios-clock-outline"></ion-icon>
+                    <span style="margin-left: 15px" class="text">{{item.item_name}} </span>
 
 					<ion-note slot="end" color="medium" class="price">
-						<p> {{ item.item_price }} {{ '€' if payment_info.currency == "EUR" else '$'}} </p>
+						<p> {{ item.item_price }} {{ payment_info.currency}} </p>
 					</ion-note>
 				</ion-item>
 				{% endfor %}
@@ -133,14 +156,13 @@
 					<ion-button expand="full" id="proceed-button"> Proceed </ion-button>
 				</ion-col>
 			</ion-row>
-
 		</div>
 		{% else %}
 		<h1>NOTHING TO DISPlAY. YOU SHOUDLNT BE HERE</h1>
 		{% endif %}
 	</ion-app>
 
-	<script src="{{ url_for('static', filename='js/common.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/common.js') }}?123"></script>
 
 </body>
 

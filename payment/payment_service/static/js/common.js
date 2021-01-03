@@ -1,5 +1,21 @@
+var pay_id_url = window.location.pathname.split("/");
+var payment_id = pay_id_url.pop() || pay_id_url.pop();
+console.log(payment_id);
+localStorage.setItem("payment_id", payment_id);
+
 const button = document.getElementById('proceed-button');
 button.addEventListener('click', presentPaymentChoicePopup);
+
+
+const button_prof = document.getElementById('profile-button');
+button_prof.addEventListener('click', gotoProfile);
+
+async function gotoProfile(){
+    let client_id = document.getElementById('client-id').innerHTML;
+    window.location.pathname = "/profile/" + client_id;
+}
+
+
 
 async function presentPaymentChoicePopup() {
 

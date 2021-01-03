@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title> Client Profile </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.esm.js"></script>
+    <script nomodule src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ionic/core/css/ionic.bundle.css" />
+
+    <!-- <link rel="preconnect" href="https://fonts.gstatic.com">
+     <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">  -->
+
+    <style>
+        :root {
+            --ion-safe-area-top: 20px;
+            --ion-safe-area-bottom: 22px;
+        }
+
+        .balance-title {
+            color: #1e5faa;
+            font-size: 25px !important;
+            font-weight: "bold" !important;
+            font-family: 'Roboto', sans-serif !important;
+
+        }
+
+        .price {
+            color: #3d3d3d;
+            font-family: 'Roboto', sans-serif !important;
+            font-size: 35px;
+        }
+
+        .available {
+            color: #646464;
+            font-size: 15px;
+        }
+
+        .icon {
+            display: inline-block;
+            font-size: 50px;
+            font-weight: "bold";
+            color: #444444;
+            vertical-align: middle;
+        }
+
+        .text {
+            display: inline-block;
+            vertical-align: middle;
+        }
+    </style>
+
+</head>
+
+<body>
+
+
+    <ion-app>
+        <ion-header>
+            <ion-toolbar color="primary" mode="ios">
+                <ion-buttons id="back-button" slot="start">
+                    <ion-back-button style="display: block"></ion-back-button>
+                  </ion-buttons>
+                <ion-title> Profile </ion-title>
+            </ion-toolbar>
+        </ion-header>
+
+        <ion-content>
+
+            <ion-card>
+                <div>
+                    <ion-card-content>
+                        <ion-item lines="none">
+                            <ion-icon name="ios-notifications-outline" class="icon ion-ios-clock-outline"></ion-icon>
+                            <span style="margin-left: 15px" class="text">Be sure to check your notifications! </span>
+                            <ion-icon style="margin-left: 15px;  color: #1e5faa;" name="ios-arrow-forward"></ion-icon>
+                        </ion-item>
+                    </ion-card-content>
+                </div>
+            </ion-card>
+
+
+            <ion-list>
+                <ion-card>
+                    <div style="margin-left: 15px;">
+                        <ion-card-header class="balance-title">
+                            Balance
+                        </ion-card-header>
+                        <ion-card-content>
+
+                            <div class="card-title price">{{ '%0.2f'|format(params.client_funds|float) }} {{params.client_currency}}</div>
+                            <div class="card-subtitle available"> Available</div>
+                        </ion-card-content>
+                        <ion-card-content class="available">
+                        </ion-card-content>
+                        <ion-button shape="round" fill="outline" color="primary" style="margin-bottom: 15px;">Transfer
+                            funds</ion-button>
+                    </div>
+                </ion-card>
+
+
+
+
+                <ion-card>
+                    <div style="margin-left: 15px;">
+                        <ion-card-header class="balance-title">
+                            Recent Activity
+                        </ion-card-header>
+                        <ion-card-content>
+
+                            <ion-list>
+                                {% for item in params.payments %}
+                                <ion-item>
+
+                                    <ion-icon name="cart" style="font-size: 20px" class="icon ion-ios-clock-outline">
+                                    </ion-icon>
+                                    <span class="text">RoadRnD & Co.</span>
+
+                                    <ion-note slot="end" color="medium" class="price">
+                                        <p> - {{ item.total }} {{ item.currency}} <ion-icon
+                                                style="margin-left: 5px; color: #1e5faa; font-size: 15px"
+                                                name="ios-arrow-forward"></ion-icon>
+                                        </p>
+                                    </ion-note>
+                                </ion-item>
+                                {% endfor %}
+                            </ion-list>
+
+                        </ion-card-content>
+                        <ion-button shape="round" fill="outline" color="primary"
+                            style="margin-bottom: 15px; margin-top: 15px">
+                            <ion-icon slot="start" name="ios-list"></ion-icon>Check all activity
+                        </ion-button>
+
+                    </div>
+                </ion-card>
+            </ion-list>
+
+
+        </ion-content>
+
+
+
+
+
+    </ion-app>
+
+    <script src="{{ url_for('static', filename='js/profile.js') }}?143"></script>
+
+</body>
+
+
+
+</html>
