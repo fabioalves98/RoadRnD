@@ -4,11 +4,35 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 
 import 'global.dart';
 import 'browser.dart';
+import 'tabs_view.dart';
+
+class MyChromeSafariBrowser extends ChromeSafariBrowser {
+  BuildContext context;
+  MyChromeSafariBrowser(browserFallback, this.context)
+      : super(bFallback: browserFallback);
+
+  @override
+  void onOpened() {
+    print("ChromeSafari browser opened");
+  }
+
+  @override
+  void onCompletedInitialLoad() {
+    print("ChromeSafari browser initial load completed");
+  }
+
+  @override
+  void onClosed() {
+    print("ChromeSafari browser closed");
+    Navigator.of(context).push(MaterialPageRoute<void>(
+      builder: (BuildContext context) {
+        return TabsView();
+      },
+    ));
+  }
+}
 
 class Login extends StatefulWidget {
-  final ChromeSafariBrowser browser =
-      new MyChromeSafariBrowser(new MyInAppBrowser());
-
   @override
   LoginState createState() => LoginState();
 }
@@ -31,7 +55,9 @@ class LoginState extends State<Login> {
             builder: (BuildContext context, AsyncSnapshot snapshot) {
               if (snapshot.hasData) {
                 String url = snapshot.data;
-                widget.browser.open(url: url);
+                ChromeSafariBrowser browser =
+                    new MyChromeSafariBrowser(new MyInAppBrowser(), context);
+                browser.open(url: url);
               }
               return CircularProgressIndicator();
             }),

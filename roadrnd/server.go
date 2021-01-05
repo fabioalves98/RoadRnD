@@ -40,7 +40,7 @@ type PaymentID struct {
 	Payment_id string
 }
 
-var docker_internal_ip = "http://172.18.0.1"
+var docker_internal_ip = "http://172.22.0.1"
 var vm_ip = "http://roadrnd.westeurope.cloudapp.azure.com"
 
 func main() {
@@ -49,7 +49,7 @@ func main() {
 	r.GET("/login", func(c *gin.Context) {
 		// Obtain required parameters to make request to OAuth service
 		client_id := c.DefaultQuery("client_id", "123")
-		redirect_url := c.DefaultQuery("redirect_url", "placeholder_url")=
+		redirect_url := c.DefaultQuery("redirect_url", "placeholder_url")
 
 		log.Println(client_id)
 		log.Println(redirect_url)
@@ -163,8 +163,7 @@ func main() {
 		// Make POST request to payment service to obtain payment link
 		url := "http://roadrnd.westeurope.cloudapp.azure.com:5006/payment"
 
-		var jsonStr = []byte("{\"client_id\": \"" + paymentInfo.CarID +
-			"\", \"transaction\" : {\"total\" : \"" + paymentInfo.Price +
+		var jsonStr = []byte("{\"client_id\": \"1234567\", \"transaction\" : {\"total\" : \"" + paymentInfo.Price +
 			"\", \"currency\": \"EUR\"}, \"item_list\" : [{\"item_name\": \"Rental - " +
 			paymentInfo.CarID + "\",\"item_price\" : \"" + paymentInfo.Price + "\"}]}")
 		req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonStr))

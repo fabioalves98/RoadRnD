@@ -64,6 +64,18 @@ class CarViewState extends State<CarView> {
       return InAppWebView(
         initialUrl:
             'http://roadrnd.westeurope.cloudapp.azure.com:5006/approve/$paymentID',
+        onLoadStart: (InAppWebViewController controller, String url) {
+          print(url);
+          if (url ==
+              'http://roadrnd.westeurope.cloudapp.azure.com:5006/finish/$paymentID') {
+            Navigator.pop(context);
+            setState(() {
+              locked = true;
+              used = false;
+              curPrice = 0;
+            });
+          }
+        },
       );
     }));
   }
