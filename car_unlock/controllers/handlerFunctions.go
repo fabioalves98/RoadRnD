@@ -37,9 +37,9 @@ func UnlockCar(c *gin.Context) {
 	var car CAR
 	c.BindJSON(&car)
 
-	/* if car.TAG != "" && car.ID != "" && car.AT != "" { */
-	if car.TAG != "" && car.ID != "" {
-		/* if validateAT(car.AT) { */
+	if car.TAG != "" && car.ID != "" && car.AT != "" {
+		// if car.TAG != "" && car.ID != "" {
+		// if validateAT(car.AT) {
 		if true { /* CHANGE TO VALIDATE ACCESS TOKEN */
 			res, err := dbmap.Query("SELECT * FROM nfc WHERE tag = ?", car.TAG)
 			defer res.Close()
@@ -76,9 +76,9 @@ func LockCar(c *gin.Context) {
 	var car CAR
 	c.BindJSON(&car)
 
-	/* if car.TAG != "" && car.ID != "" && car.AT != "" { */
-	if car.TAG != "" && car.ID != "" {
-		/* if validateAT(car.AT) { */
+	if car.TAG != "" && car.ID != "" && car.AT != "" {
+		// if car.TAG != "" && car.ID != "" {
+		// if validateAT(car.AT) {
 		if true { /* CHANGE TO VALIDATE ACCESS TOKEN */
 			res, err := dbmap.Query("SELECT * FROM nfc WHERE tag = ?", car.TAG)
 			defer res.Close()
@@ -114,9 +114,9 @@ func AddCar(c *gin.Context) {
 	var car CAR
 	c.BindJSON(&car)
 
-	/* if car.TAG != "" && car.ID != "" && car.AT != "" { */
-	if car.ID != "" && car.TAG != "" {
-		/* if validateAT(car.AT) { */
+	if car.TAG != "" && car.ID != "" && car.AT != "" {
+		// if car.ID != "" && car.TAG != "" {
+		// if validateAT(car.AT) {
 		if true { /* CHANGE TO VALIDATE ACCESS TOKEN */
 			_, err := dbmap.Exec("INSERT INTO nfc(id,tag) VALUES (?,?)", car.ID, car.TAG)
 			if err != nil {
@@ -136,9 +136,9 @@ func DelCar(c *gin.Context) {
 	var car CAR
 	c.BindJSON(&car)
 
-	/* if car.ID != "" && car.AT != "" { */
-	if car.ID != "" {
-		/* if validateAT(car.AT) { */
+	if car.ID != "" && car.AT != "" {
+		// if car.ID != "" {
+		// if validateAT(car.AT) {
 		if true { /* CHANGE TO VALIDATE ACCESS TOKEN */
 			_, err := dbmap.Exec("DELETE FROM nfc WHERE id = ?", car.ID)
 			if err != nil {
@@ -158,9 +158,9 @@ func UpCarTag(c *gin.Context) {
 	var car CAR
 	c.BindJSON(&car)
 
-	/* if car.TAG != "" && car.ID != "" && car.AT != "" { */
-	if car.ID != "" && car.TAG != "" {
-		/* if validateAT(car.AT) { */
+	if car.TAG != "" && car.ID != "" && car.AT != "" {
+		// if car.ID != "" && car.TAG != "" {
+		// if validateAT(car.AT) {
 		if true { /* CHANGE TO VALIDATE ACCESS TOKEN */
 			_, err := dbmap.Exec("UPDATE nfc SET tag = ? WHERE id = ?", car.TAG, car.ID)
 			if err != nil {
@@ -173,5 +173,14 @@ func UpCarTag(c *gin.Context) {
 		}
 	} else {
 		c.JSON(400, gin.H{"error": "Empty fields", "car": car})
+	}
+}
+
+func ClearDB(c *gin.Context) {
+	_, err := dbmap.Exec("DELETE FROM nfc")
+	if err != nil {
+		c.JSON(500, err)
+	} else {
+		c.JSON(200, gin.H{"message": "NFC Database clear"})
 	}
 }

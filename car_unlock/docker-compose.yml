@@ -1,11 +1,11 @@
-version: '3.3'
+version: '2.0'
 services:
   api:
     build: .
     depends_on:
       - sql_db
     ports:
-      - "5003:5673"
+      - "5003:5003"
     links:
       - sql_db
   sql_db:
