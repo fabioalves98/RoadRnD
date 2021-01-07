@@ -116,7 +116,7 @@
 
 							<ion-note slot="end" color="medium" class="price">
 								{{ '%0.2f'|format((payment_info.total|float - payment_info.total_tax|float)|float) }}
-								{{ '€' if payment_info.currency == "EUR" else '$'}}
+								{{ payment_info.currency}}
 							</ion-note>
 						</ion-item>
 
@@ -127,7 +127,7 @@
 
 							<ion-note slot="end" color="medium" class="price">
 								{{ '%0.2f'|format(payment_info.total_tax|float) }}
-								{{ '€' if payment_info.currency == "EUR" else '$'}}
+								{{ payment_info.currency }}
 							</ion-note>
 						</ion-item>
 
@@ -138,7 +138,7 @@
 							</ion-label>
 
 							<ion-note class="total-price" slot="end" color="medium">
-								{{ payment_info.total }} {{ '€' if payment_info.currency == "EUR" else '$'}}
+								{{ payment_info.total }} {{payment_info.currency}}
 							</ion-note>
 						</ion-item>
 					</ion-list>

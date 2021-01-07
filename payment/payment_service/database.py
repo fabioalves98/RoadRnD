@@ -52,10 +52,13 @@ class Database:
             # TODO: Fix the item list here.
             ts = time.time()
             p = (timestampToDateTime(ts), timestampToDateTime(ts),)
-            c.execute('''INSERT INTO PAYMENTS VALUES ('PAYMENT-BDSk84729DHDSA7JDG6', '12.98', 'EUR', 'Rental:12.98', ?, ?, 'approved', '1234567')''', p)
+            c.execute('''INSERT INTO PAYMENTS VALUES ('PAYMENT-BDSk84729DHDSA7JDG6', '12.98', 'EUR', 'Rental:12.98', ?, ?, 'created', '1234567')''', p)
             ts = time.time()
             p = (timestampToDateTime(ts), timestampToDateTime(ts),)
             c.execute('''INSERT INTO PAYMENTS VALUES ('PAYMENT-BDSk88929DHDSA7JDG6', '28.90', 'EUR', 'Rental:28.90', ?, ?, 'approved', '1234567')''', p)
+            ts = time.time()
+            p = (timestampToDateTime(ts), timestampToDateTime(ts),)
+            c.execute('''INSERT INTO PAYMENTS VALUES ('PAYMENT-BDSk88929DDDSA7JDG6', '7.13', 'EUR', 'Rental:7.13', ?, ?, 'approved', '1234567')''', p)
             connection.commit()
         # content = self.c.execute('SELECT * FROM CLIENT_BALANCE')
         # for c in content:

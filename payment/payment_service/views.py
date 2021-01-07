@@ -119,6 +119,13 @@ def display_payment_page(payment_id):
     if not payment:
         return Response(response=json.dumps({"Error" : "<payment_id> provided doesn't exist!"}), status=500, mimetype='application/json')
 
+    if payment["state"] == "approved":
+        return Response(response=json.dumps({"Mistakes were made" : "Payment already approved"}), status=200, mimetype='application/json')
+
+
+    if payment["state"] == "not_approved":
+        return Response(response=json.dumps({"Mistakes were made" : "Payment not approved. Try creating a new instance."}), status=200, mimetype='application/json')
+
 
     payment["total_tax"] = calculateTax(payment["item_list"])
     
@@ -195,10 +202,14 @@ def client_profile(client_id):
 
     # get clients payments -> all payments, values and status
     clients_payments = db.getClientPayments(client_id)
-    # print(clients_payments[0]["time"], flush=True)
+    for payment in clients_payments:
+        payment["time"] = payment["time"][:10] # Truncate the time from the datetime
 
     # get client -> for funds and currency
     client = db.getClients(client_id)
+    if not client:
+        return Response(response=json.dumps({"Error" : "<client_id> does not exist!"}), status=500, mimetype='application/json')
+
     # set params
     params = {"client_funds": client["balance"], "client_currency": client["currency"], "payments": clients_payments}
     

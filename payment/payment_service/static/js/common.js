@@ -25,7 +25,7 @@ async function presentPaymentChoicePopup() {
     alert.header = 'Choose the payment method';
     alert.buttons = [
         {
-            text: 'RoadRnd Funds',
+            text: 'PayServ. Funds',
             // cssClass: 'secondary',
             handler: () => {
                 // go through

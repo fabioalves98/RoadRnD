@@ -63,7 +63,7 @@
             <ion-toolbar color="primary" mode="ios">
                 <ion-buttons id="back-button" slot="start">
                     <ion-back-button style="display: block"></ion-back-button>
-                  </ion-buttons>
+                </ion-buttons>
                 <ion-title> Profile </ion-title>
             </ion-toolbar>
         </ion-header>
@@ -91,7 +91,8 @@
                         </ion-card-header>
                         <ion-card-content>
 
-                            <div class="card-title price">{{ '%0.2f'|format(params.client_funds|float) }} {{params.client_currency}}</div>
+                            <div class="card-title price">{{ '%0.2f'|format(params.client_funds|float) }}
+                                {{params.client_currency}}</div>
                             <div class="card-subtitle available"> Available</div>
                         </ion-card-content>
                         <ion-card-content class="available">
@@ -113,19 +114,27 @@
 
                             <ion-list>
                                 {% for item in params.payments %}
+                                {% if item.state == "approved" %}
+
                                 <ion-item>
 
-                                    <ion-icon name="cart" style="font-size: 20px" class="icon ion-ios-clock-outline">
-                                    </ion-icon>
-                                    <span class="text">RoadRnD & Co.</span>
-
-                                    <ion-note slot="end" color="medium" class="price">
-                                        <p> - {{ item.total }} {{ item.currency}} <ion-icon
-                                                style="margin-left: 5px; color: #1e5faa; font-size: 15px"
-                                                name="ios-arrow-forward"></ion-icon>
-                                        </p>
-                                    </ion-note>
+                                    
+                                        <ion-icon name="cart" style="font-size: 20px; margin-top: 5px; margin-right: 15px"
+                                            class="icon ion-ios-clock-outline">
+                                        </ion-icon>
+                                        <ion-label>
+                                            <span class="text">RoadRnD & Co.</span>
+                                            <p>{{ item.time }} </p>
+                                        </ion-label>
+                                        
+                                        <ion-note slot="end" color="medium" class="price">
+                                            <p> - {{ item.total }} {{ item.currency}} <ion-icon
+                                                    style="margin-left: 5px; color: #1e5faa; font-size: 15px"
+                                                    name="ios-arrow-forward"></ion-icon>
+                                            </p>
+                                        </ion-note>
                                 </ion-item>
+                                {% endif %}
                                 {% endfor %}
                             </ion-list>
 
