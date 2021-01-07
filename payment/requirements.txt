@@ -1,2 +1,3 @@
 Flask==1.1.1
 shortuuid==1.0.1
+requests==2.25.1

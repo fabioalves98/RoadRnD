@@ -104,18 +104,23 @@ def create_payment():
         except:
             return Response(response=json.dumps({"Error" : "Please provide an access token and try again!!"}), status=200, mimetype='application/json')
 
-        response = requests.get(AUTH_SERV_URL + access_token)
+        try:
+            response = requests.get(AUTH_SERV_URL + access_token)
+        except:
+            return Response(response=json.dumps({"Error" : "There was a problem requesting the auth service!"}), status=500, mimetype='application/json')
+ 
+
         if response.status_code == 200:
             pass # successful auth code, continue
         else:
             pass # not valid, return error.
 
-            
+
         
         payment = {"id": "PAYMENT-" + str(payment_id),"item_list" : items, "total": transaction_val, "currency": transaction_cur, "total_tax": str(total_tax), "client_id": client_id}
 
         if not db.insertPayment(payment):
-            return Response(response=json.dumps({"Error" : "Something went wrong while creatinga new payment! Try again!"}), status=500, mimetype='application/json')
+            return Response(response=json.dumps({"Error" : "Something went wrong while creating a new payment! Try again!"}), status=500, mimetype='application/json')
 
         print(db.getPayments(), flush=True)
 
@@ -201,7 +206,7 @@ def execute_payment():
 
     except Exception as e:
         print(e, flush=True)
-        print("No access token. Assuming credit card and not RoadRnD funds", flush=True)
+        print("No access token. Assuming credit card and not PayServ. funds", flush=True)
 
     db.updatePaymentStatus(payment_id, "approved")
     return Response(response=json.dumps({"OK" : "Payment executed and approved"}), status=200, mimetype='application/json')
