@@ -98,6 +98,19 @@ def create_payment():
         items = body_params["item_list"]
         payment_id = shortuuid.uuid()
         total_tax = calculateTax(items)
+
+        try:
+            access_token = body_params["access_token"]
+        except:
+            return Response(response=json.dumps({"Error" : "Please provide an access token and try again!!"}), status=200, mimetype='application/json')
+
+        response = requests.get(AUTH_SERV_URL + access_token)
+        if response.status_code == 200:
+            pass # successful auth code, continue
+        else:
+            pass # not valid, return error.
+
+            
         
         payment = {"id": "PAYMENT-" + str(payment_id),"item_list" : items, "total": transaction_val, "currency": transaction_cur, "total_tax": str(total_tax), "client_id": client_id}
 
@@ -147,14 +160,10 @@ def execute_payment():
 
 
     try:
-        access_token = body_params["access_token"]
-        print("access_token:" + str(access_token), flush=True)
+        # access_token = body_params["access_token"]
+        # print("access_token:" + str(access_token), flush=True)
 
-        response = requests.get(AUTH_SERV_URL + access_token)
-        if response.status_code == 200:
-            pass # successful auth code, continue
-        else:
-            pass # not valid, return error.
+
         
         # Fetch payment data from db.
         payment = db.getPayments(payment_id)

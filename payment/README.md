@@ -22,6 +22,7 @@
 ```javascript
 {
     "client_id" : "1234567",
+    "access_token" : "i32o1531ioh3o1ih321oih",
     "transaction"   : {
         "total" : "24.90",
         "currency" : "EUR"  // or others like EUR
@@ -58,7 +59,6 @@ When the /create endpoint is called the user is automatically redirected to /app
 `/execute POST e.g. Body params`
 ```javascript
 {
-    "access_token" : "321hDSAj325jDSAK897SA" // and credit card data or something depending on payment method?
     "payment_id"   : "PAYMENT-BDSk84729DHDSA7JDG6"
 }
 ```
