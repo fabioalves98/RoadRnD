@@ -40,7 +40,9 @@ type PaymentID struct {
 	Payment_id string
 }
 
-var docker_internal_ip = "http://172.22.0.1"
+//var docker_internal_ip = "http://172.22.0.1"
+// docker vm ip
+var docker_internal_ip = "http://172.17.0.1"
 var vm_ip = "http://roadrnd.westeurope.cloudapp.azure.com"
 
 func main() {
