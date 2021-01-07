@@ -37,8 +37,8 @@ func UnlockCar(c *gin.Context) {
 	var car CAR
 	c.BindJSON(&car)
 
-	if car.TAG != "" && car.ID != "" && car.AT != "" {
-		// if car.TAG != "" && car.ID != "" {
+	// if car.TAG != "" && car.ID != "" && car.AT != "" {
+	if car.TAG != "" && car.ID != "" {
 		// if validateAT(car.AT) {
 		if true { /* CHANGE TO VALIDATE ACCESS TOKEN */
 			res, err := dbmap.Query("SELECT * FROM nfc WHERE tag = ?", car.TAG)
@@ -76,8 +76,8 @@ func LockCar(c *gin.Context) {
 	var car CAR
 	c.BindJSON(&car)
 
-	if car.TAG != "" && car.ID != "" && car.AT != "" {
-		// if car.TAG != "" && car.ID != "" {
+	// if car.TAG != "" && car.ID != "" && car.AT != "" {
+	if car.TAG != "" && car.ID != "" {
 		// if validateAT(car.AT) {
 		if true { /* CHANGE TO VALIDATE ACCESS TOKEN */
 			res, err := dbmap.Query("SELECT * FROM nfc WHERE tag = ?", car.TAG)
@@ -114,8 +114,8 @@ func AddCar(c *gin.Context) {
 	var car CAR
 	c.BindJSON(&car)
 
-	if car.TAG != "" && car.ID != "" && car.AT != "" {
-		// if car.ID != "" && car.TAG != "" {
+	// if car.TAG != "" && car.ID != "" && car.AT != "" {
+	if car.ID != "" && car.TAG != "" {
 		// if validateAT(car.AT) {
 		if true { /* CHANGE TO VALIDATE ACCESS TOKEN */
 			_, err := dbmap.Exec("INSERT INTO nfc(id,tag) VALUES (?,?)", car.ID, car.TAG)
@@ -136,8 +136,8 @@ func DelCar(c *gin.Context) {
 	var car CAR
 	c.BindJSON(&car)
 
-	if car.ID != "" && car.AT != "" {
-		// if car.ID != "" {
+	// if car.ID != "" && car.AT != "" {
+	if car.ID != "" {
 		// if validateAT(car.AT) {
 		if true { /* CHANGE TO VALIDATE ACCESS TOKEN */
 			_, err := dbmap.Exec("DELETE FROM nfc WHERE id = ?", car.ID)
@@ -158,8 +158,8 @@ func UpCarTag(c *gin.Context) {
 	var car CAR
 	c.BindJSON(&car)
 
-	if car.TAG != "" && car.ID != "" && car.AT != "" {
-		// if car.ID != "" && car.TAG != "" {
+	// if car.TAG != "" && car.ID != "" && car.AT != "" {
+	if car.ID != "" && car.TAG != "" {
 		// if validateAT(car.AT) {
 		if true { /* CHANGE TO VALIDATE ACCESS TOKEN */
 			_, err := dbmap.Exec("UPDATE nfc SET tag = ? WHERE id = ?", car.TAG, car.ID)
