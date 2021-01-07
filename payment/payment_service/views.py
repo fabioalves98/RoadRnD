@@ -3,12 +3,15 @@ import json
 import shortuuid
 from payment_service.database import *
 from payment_service.common import calculateTax, convertCurrency
+import requests
 
 payment = Blueprint('payment_service', __name__)
 
 
 
 db = Database() 
+
+AUTH_SERV_URL = "roadrnd.westeurope.cloudapp.azure.com:5005/oauth/validate_token/"
 
 @payment.route('/client/<client_id>', methods=["GET"])
 def get_client(client_id):
@@ -146,7 +149,12 @@ def execute_payment():
     try:
         access_token = body_params["access_token"]
         print("access_token:" + str(access_token), flush=True)
-        ## TODO: check access token validity
+
+        response = requests.get(AUTH_SERV_URL + access_token)
+        if response.status_code == 200:
+            pass # successful auth code, continue
+        else:
+            pass # not valid, return error.
         
         # Fetch payment data from db.
         payment = db.getPayments(payment_id)
