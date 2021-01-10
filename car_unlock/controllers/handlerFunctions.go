@@ -37,10 +37,8 @@ func UnlockCar(c *gin.Context) {
 	var car CAR
 	c.BindJSON(&car)
 
-	// if car.TAG != "" && car.ID != "" && car.AT != "" {
-	if car.TAG != "" && car.ID != "" {
-		// if validateAT(car.AT) {
-		if true { /* CHANGE TO VALIDATE ACCESS TOKEN */
+	if car.TAG != "" && car.ID != "" && car.AT != "" {
+		if validateAT(car.AT) {
 			res, err := dbmap.Query("SELECT * FROM nfc WHERE tag = ?", car.TAG)
 			defer res.Close()
 
@@ -76,10 +74,8 @@ func LockCar(c *gin.Context) {
 	var car CAR
 	c.BindJSON(&car)
 
-	// if car.TAG != "" && car.ID != "" && car.AT != "" {
-	if car.TAG != "" && car.ID != "" {
-		// if validateAT(car.AT) {
-		if true { /* CHANGE TO VALIDATE ACCESS TOKEN */
+	if car.TAG != "" && car.ID != "" && car.AT != "" {
+		if validateAT(car.AT) {
 			res, err := dbmap.Query("SELECT * FROM nfc WHERE tag = ?", car.TAG)
 			defer res.Close()
 
