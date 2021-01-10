@@ -1,10 +1,12 @@
-#FLOW EXAMPLE
+## FLOW EXAMPLE
 
 (Client)    - Clink login link
 (App)       -/oauth/authorize client_id && redirect_url
 (Client)/Web page    - Login with one option
 (Client)/Web page   - POST /oauth/login -> login success
-(Auth)   - Redirect to the redirect_url with authorization code and user information
+(Auth) - Ask client to close the browser
+<!-- (Auth)   - Redirect to the redirect_url with authorization code and user information -->
+(App)       - GET /credentialsS
 (App)       - GET /oauth/token authorization_code && client_id && redirect_url
             - return { 
                         "access_token": access_token,
@@ -15,9 +17,13 @@
 
 
 
-#EXAMPLE
+## EndPoints
+
+### /oauth/authorize
 
 http://localhost:5005/oauth/authorize?client_id=RoadRnD&redirect_url=http://www.roadrnd.com&user_key=D1234D
+
+### /oauth/credentials
 
 http://localhost:5005/oauth/credentials?user_key=D1234D
 
@@ -41,7 +47,10 @@ localStorage.getItem("auth_code");
 localStorage.getItem("image");
 localStorage.getItem("mail");
 
+### /oauth/token
 
-http://localhost:5005/oauth/token?client_id=RoadRnD&redirect_url=http://www.roadrnd.com&authorization_code=gAAAAABf7fnCIE-sDXX1jJAvuXOspilhSaytU-m4j7bzGShX0bvgEDLESJ6-cs8WFxxc_KhYaI4N7RpE_tNp0RSHbKpPjUsqobvkzyY92L5SbtzXjTHqaYUaq-0crn72oLHQdgCKncfQcyjpa0lTpcrazacHo6SutAsuL0wixJzNlU0uZ2M5Fd0JK2QekvVbq0_xVaf33jQNoFY9jflkV9M-GzNO8KT7Jg==
+http://localhost:5005/oauth/token?client_id=RoadRnD&redirect_url=http://www.roadrnd.com&authorization_code=gAAAAABf-xOVbBizBBaSk41yOZcx_C4NLf5SrETAy5xqPzfK7BwDStqdrlITG3z5wVOVexhqoFqwUowrgrsmrXeD3sW9TCZ6vpe_0SBZg66PopHA_5hAjEGurIpuI_ejckAgVsNpz9lKOpZqaP3MTl8Ey9IsusGZSdQtwSS1sEIixIuVp0RY3uikjCPH0qJRC8THKJBsS_ChYT54cOF4VaB_kbz5nC4QEA==
+
+### /validate_token/<access_token>
 
 http://localhost:5005/validate_token/eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2MDk1MTc5MjUsImlhdCI6MTYwOTQzMTUyMCwic3ViIjoiUm9hZFJuRCJ9.GofTGLvnm6iz-lBO9y6XoIyfSh13vgrUgjNaI9OSuKk

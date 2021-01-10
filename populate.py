@@ -7,9 +7,9 @@ import json
 from bs4 import BeautifulSoup
 import urllib3
 
-API_LINK = "http://localhost" 
+#API_LINK = "http://localhost" 
 # API_LINK = "http://40.115.31.209"
-# API_LINK = "http://roadrnd.westeurope.cloudapp.azure.com"
+API_LINK = "http://roadrnd.westeurope.cloudapp.azure.com"
 
 cars = {
     'Honda' :   ['Civic', 'Accord', 'Brio', 'City', 'Jazz', 'Legend'],
@@ -32,6 +32,14 @@ tags = ['tag1', 'tagX', 'tagV2']
 locationAveiro = [40.640802, -8.653285]
 status_options = ['Rented', 'Parked']
 #location
+
+#CLEAR SERVICES
+
+response = requests.get(API_LINK + ":5001/clean")
+response = requests.get(API_LINK + ":5002/clear")
+response = requests.get(API_LINK + ":5003/clear")
+
+
 
 for x in range(30):
     s = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(6))
