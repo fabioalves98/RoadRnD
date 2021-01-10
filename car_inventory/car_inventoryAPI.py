@@ -1,6 +1,7 @@
 from flask import Flask, request, json, Response
 from pymongo import MongoClient
 import logging as log
+import requests
 
 app = Flask(__name__)
 
@@ -84,6 +85,27 @@ def base():
 
 @app.route('/brands', methods=['GET'])
 def get_brands():
+    data = request.json
+    try:
+        access_token = data["access_token"]
+    except:
+        return Response(response=json.dumps({"Error" : "Please provide an access token and try again!!"}), 
+                        status=400, 
+                        mimetype='application/json')
+
+    try:
+        response = requests.get("http://roadrnd.westeurope.cloudapp.azure.com:5005/validate_token/" + access_token)
+    except:
+        return Response(response=json.dumps({"Error" : "There was a problem requesting the auth service!"}), 
+                        status=500, 
+                        mimetype='application/json')
+
+
+    if response.status_code != 200:
+        return Response(response=json.dumps({"Error" : "Access token invalid"}), 
+                        status=400, 
+                        mimetype='application/json')
+
     db = {
         "database" : "carInventory",
         "collection" : "cars"
@@ -112,6 +134,26 @@ def get_clean():
 
 @app.route('/<brand>/models', methods=['GET'])
 def get_models(brand):
+    data = request.json
+    try:
+        access_token = data["access_token"]
+    except:
+        return Response(response=json.dumps({"Error" : "Please provide an access token and try again!!"}), 
+                        status=400, 
+                        mimetype='application/json')
+
+    try:
+        response = requests.get("http://roadrnd.westeurope.cloudapp.azure.com:5005/validate_token/" + access_token)
+    except:
+        return Response(response=json.dumps({"Error" : "There was a problem requesting the auth service!"}), 
+                        status=500, 
+                        mimetype='application/json')
+
+
+    if response.status_code != 200:
+        return Response(response=json.dumps({"Error" : "Access token invalid"}), 
+                        status=400, 
+                        mimetype='application/json')
     db = {
         "database" : "carInventory",
         "collection" : "cars"
@@ -132,6 +174,26 @@ def get_models(brand):
 
 @app.route('/car/findByFilters', methods=['GET'])
 def get_cars_by_filters():
+    data = request.json
+    try:
+        access_token = data["access_token"]
+    except:
+        return Response(response=json.dumps({"Error" : "Please provide an access token and try again!!"}), 
+                        status=400, 
+                        mimetype='application/json')
+
+    try:
+        response = requests.get("http://roadrnd.westeurope.cloudapp.azure.com:5005/validate_token/" + access_token)
+    except:
+        return Response(response=json.dumps({"Error" : "There was a problem requesting the auth service!"}), 
+                        status=500, 
+                        mimetype='application/json')
+
+
+    if response.status_code != 200:
+        return Response(response=json.dumps({"Error" : "Access token invalid"}), 
+                        status=400, 
+                        mimetype='application/json')
     fuel = ''
     brand = ''
     model = ''
@@ -176,6 +238,26 @@ def get_cars_by_filters():
 
 @app.route('/car/<carId>', methods=['GET'])
 def get_car_byID(carId):
+    data = request.json
+    try:
+        access_token = data["access_token"]
+    except:
+        return Response(response=json.dumps({"Error" : "Please provide an access token and try again!!"}), 
+                        status=400, 
+                        mimetype='application/json')
+
+    try:
+        response = requests.get("http://roadrnd.westeurope.cloudapp.azure.com:5005/validate_token/" + access_token)
+    except:
+        return Response(response=json.dumps({"Error" : "There was a problem requesting the auth service!"}), 
+                        status=500, 
+                        mimetype='application/json')
+
+
+    if response.status_code != 200:
+        return Response(response=json.dumps({"Error" : "Access token invalid"}), 
+                        status=400, 
+                        mimetype='application/json')
     car = {
     "id": "AB-50-DS",
     "brand": "Opel",
@@ -206,7 +288,26 @@ def get_car_byID(carId):
 
 @app.route('/car', methods=['GET'])
 def get_all_cars():
-    
+    data = request.json
+    try:
+        access_token = data["access_token"]
+    except:
+        return Response(response=json.dumps({"Error" : "Please provide an access token and try again!!"}), 
+                        status=400, 
+                        mimetype='application/json')
+
+    try:
+        response = requests.get("http://roadrnd.westeurope.cloudapp.azure.com:5005/validate_token/" + access_token)
+    except:
+        return Response(response=json.dumps({"Error" : "There was a problem requesting the auth service!"}), 
+                        status=500, 
+                        mimetype='application/json')
+
+
+    if response.status_code != 200:
+        return Response(response=json.dumps({"Error" : "Access token invalid"}), 
+                        status=400, 
+                        mimetype='application/json')
     db = {
         "database" : "carInventory",
         "collection" : "cars"
