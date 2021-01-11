@@ -11,7 +11,7 @@ payment = Blueprint('payment_service', __name__)
 
 db = Database() 
 
-AUTH_SERV_URL = "roadrnd.westeurope.cloudapp.azure.com:5005/validate_token/"
+AUTH_SERV_URL = "http://roadrnd.westeurope.cloudapp.azure.com:5005/validate_token/"
 
 @payment.route('/client/<client_id>', methods=["GET"])
 def get_client(client_id):
@@ -106,9 +106,9 @@ def create_payment():
 
         try:
             response = requests.get(AUTH_SERV_URL + access_token)
-        except:
-            return Response(response=json.dumps({"Error" : "There was a problem requesting the auth service!"}), status=500, mimetype='application/json')
- 
+        except Exception as e:
+            return Response(response=json.dumps({"Error" : "There was a problem requesting the auth service!", "test": e}), status=500, mimetype='application/json')
+
 
         if response.status_code == 200:
             pass # successful auth code, continue
