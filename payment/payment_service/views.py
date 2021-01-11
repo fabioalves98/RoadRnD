@@ -11,7 +11,7 @@ payment = Blueprint('payment_service', __name__)
 
 db = Database() 
 
-AUTH_SERV_URL = "roadrnd.westeurope.cloudapp.azure.com:5005/oauth/validate_token/"
+AUTH_SERV_URL = "roadrnd.westeurope.cloudapp.azure.com:5005/validate_token/"
 
 @payment.route('/client/<client_id>', methods=["GET"])
 def get_client(client_id):
