@@ -83,6 +83,30 @@ class CarViewState extends State<CarView> {
     }));
   }
 
+  Container carTitle(String title) {
+    return Container(
+      child: Row(
+        children: [
+          Text(
+            title,
+            style: Theme.of(context).textTheme.headline3,
+          ),
+        ],
+      ),
+      margin: const EdgeInsets.only(bottom: 20.0),
+    );
+  }
+
+  Container carImage(String image) {
+    return Container(
+        width: 300.0,
+        color: Colors.yellow,
+        child: Image.network(
+          "${widget.car.photo}",
+          fit: BoxFit.fitWidth,
+        ));
+  }
+
   Row infoEntry(String label, String value) {
     return Row(children: [
       Text(label, style: Theme.of(context).textTheme.bodyText1),
@@ -95,19 +119,22 @@ class CarViewState extends State<CarView> {
     ]);
   }
 
-  Column priceCounter() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text(
-          "Price Counter",
-          style: Theme.of(context).textTheme.bodyText1,
-        ),
-        Text(
-          (locked && !used) ? "" : "$curPrice €",
-          style: Theme.of(context).textTheme.bodyText2,
-        )
-      ],
+  Container priceCounter() {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 50.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            "Price Counter",
+            style: Theme.of(context).textTheme.bodyText1,
+          ),
+          Text(
+            (locked && !used) ? "" : "$curPrice €",
+            style: Theme.of(context).textTheme.bodyText2,
+          )
+        ],
+      ),
     );
   }
 
@@ -177,13 +204,15 @@ class CarViewState extends State<CarView> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('${widget.car.brand} ${widget.car.model}'),
+          title: Text('Rent a Car'),
         ),
         body: Container(
             padding: EdgeInsets.all(32),
             child: Column(
               children: [
-                Image.network("${widget.car.photo}"),
+                carTitle("${widget.car.brand} ${widget.car.model}"),
+                carImage("${widget.car.photo}"),
+                // Image.network("${widget.car.photo}"),
                 Expanded(
                     child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -197,7 +226,7 @@ class CarViewState extends State<CarView> {
                       infoEntry(
                           "Price", "${widget.car.price_per_minute / 100} €/m")
                     ])),
-                Expanded(child: priceCounter()),
+                priceCounter(),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
