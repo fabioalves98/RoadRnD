@@ -10,7 +10,8 @@ import 'dropdown.dart';
 Future<List<Car>> fetchCars() async {
   print("Getting cars");
 
-  final response = await http.get(Global.lt_link + '/cars');
+  final response = await http
+      .get(Global.lt_link + '/cars', headers: {"Authorization": Global.token});
 
   print(response.body);
 

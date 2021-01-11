@@ -22,8 +22,14 @@ class MyChromeSafariBrowser extends ChromeSafariBrowser {
   }
 
   @override
-  void onClosed() {
+  void onClosed() async {
     print("ChromeSafari browser closed");
+    final response = await http.get(Global.lt_link + "/credentials");
+
+    print(response.body);
+
+    Global.token = response.body;
+
     Navigator.of(context).push(MaterialPageRoute<void>(
       builder: (BuildContext context) {
         return TabsView();

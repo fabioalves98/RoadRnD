@@ -50,6 +50,7 @@ class CarViewState extends State<CarView> {
       Global.lt_link + '/create_payment',
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
+        "Authorization": Global.token
       },
       body: jsonEncode(
           <String, String>{'CarID': widget.car.id, 'Price': "$curPrice"}),

@@ -24,7 +24,8 @@ class _MapSampleState extends State<MapSample> {
     Car car;
     print("Getting car - $car_id");
 
-    final response = await http.get(Global.lt_link + '/car/$car_id');
+    final response = await http.get(Global.lt_link + '/car/$car_id',
+        headers: {"Authorization": Global.token});
 
     print(response.body);
 

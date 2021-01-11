@@ -1,3 +1,4 @@
 class Global {
-  static final String lt_link = 'https://spotty-mouse-11.loca.lt';
+  static final String lt_link = 'https://foolish-fly-22.loca.lt';
+  static String token = "";
 }

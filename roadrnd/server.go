@@ -31,6 +31,20 @@ type CarLocation struct {
 	Status   string
 }
 
+type Credentials struct {
+	Auth_code string
+	Client_id string
+	Image     string
+	Mail      string
+	User_key  string
+	User_name string
+}
+
+type Token struct {
+	Access_token string
+	Token_type   string
+}
+
 type PaymentInfo struct {
 	CarID string
 	Price string
@@ -50,16 +64,60 @@ func main() {
 
 	r.GET("/login", func(c *gin.Context) {
 		// Obtain required parameters to make request to OAuth service
-		client_id := c.DefaultQuery("client_id", "123")
-		redirect_url := c.DefaultQuery("redirect_url", "placeholder_url")
+		client_id := c.DefaultQuery("client_id", "RoadRnD")
 
 		log.Println(client_id)
-		log.Println(redirect_url)
 
 		// Make request to OAuth Server
-		request_link := "http://roadrnd.westeurope.cloudapp.azure.com:5005/oauth/authorize?client_id=12345&redirect_url=app"
-
+		request_link := vm_ip + ":5005/oauth/authorize?client_id=RoadRnD&redirect_url=http://www.roadrnd.com&user_key=D1234D"
 		c.String(http.StatusOK, request_link)
+	})
+
+	r.GET("/credentials", func(c *gin.Context) {
+		// Get credentials from OAuth service
+		credentials_link := vm_ip + ":5005/oauth/credentials?user_key=D1234D"
+		resp, err := http.Get(credentials_link)
+		if err != nil {
+			log.Fatalln(err)
+		}
+		body, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			log.Fatalln(err)
+		}
+
+		var cred []Credentials
+		err = json.Unmarshal([]byte(body), &cred)
+
+		if err != nil {
+			log.Println("Error Parsing Inventory JSON data - ", err)
+		}
+
+		pretty_inv, err := json.MarshalIndent(cred, "", "    ")
+		log.Println(string(pretty_inv))
+
+		// Get Token from OAuth service
+		token_link := vm_ip + ":5005/oauth/token?client_id=RoadRnD&redirect_url=http://www.roadrnd.com&authorization_code=" + cred[0].Auth_code
+		resp, err = http.Get(token_link)
+		if err != nil {
+			log.Fatalln(err)
+		}
+		body, err = ioutil.ReadAll(resp.Body)
+		if err != nil {
+			log.Fatalln(err)
+		}
+
+		var token Token
+		err = json.Unmarshal([]byte(body), &token)
+
+		if err != nil {
+			log.Println("Error Parsing Inventory JSON data - ", err)
+		}
+
+		pretty_inv, err = json.MarshalIndent(token, "", "    ")
+		log.Println(string(pretty_inv))
+
+		c.String(200, token.Access_token)
+
 	})
 
 	r.GET("/map", func(c *gin.Context) {
@@ -90,11 +148,23 @@ func main() {
 	})
 
 	r.GET("/cars", func(c *gin.Context) {
-		// Get Cars from Car Inventory
-		resp, err := http.Get(docker_internal_ip + ":5001/car")
+		// Get Token from header
+		token := c.Request.Header["Authorization"]
+		log.Println(token)
+
+		url := docker_internal_ip + ":5001/car"
+
+		var jsonStr = []byte("{\"access_token\": \"" + token[0] + "\"}")
+		req, err := http.NewRequest("GET", url, bytes.NewBuffer(jsonStr))
+		req.Header.Set("Content-Type", "application/json")
+
+		client := &http.Client{}
+		resp, err := client.Do(req)
 		if err != nil {
-			log.Fatalln(err)
+			panic(err)
 		}
+		defer resp.Body.Close()
+
 		body, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
 			log.Fatalln(err)
@@ -119,11 +189,23 @@ func main() {
 	r.GET("/car/:id", func(c *gin.Context) {
 		id := c.Param("id")
 
-		// Get specific Car from Car Inventory
-		resp, err := http.Get(docker_internal_ip + ":5001/car/" + id)
+		// Get Token from header
+		token := c.Request.Header["Authorization"]
+		log.Println(token)
+
+		url := docker_internal_ip + ":5001/car/" + id
+
+		var jsonStr = []byte("{\"access_token\": \"" + token[0] + "\"}")
+		req, err := http.NewRequest("GET", url, bytes.NewBuffer(jsonStr))
+		req.Header.Set("Content-Type", "application/json")
+
+		client := &http.Client{}
+		resp, err := client.Do(req)
 		if err != nil {
-			log.Fatalln(err)
+			panic(err)
 		}
+		defer resp.Body.Close()
+
 		body, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
 			log.Fatalln(err)
@@ -147,6 +229,10 @@ func main() {
 	r.POST("/create_payment", func(c *gin.Context) {
 		log.Println("Create Payment endpoint")
 
+		// Get Token from header
+		token := c.Request.Header["Authorization"]
+		log.Println(token)
+
 		// Obtain payment info from app
 		body, err := ioutil.ReadAll(c.Request.Body)
 		if err != nil {
@@ -165,7 +251,8 @@ func main() {
 		// Make POST request to payment service to obtain payment link
 		url := "http://roadrnd.westeurope.cloudapp.azure.com:5006/payment"
 
-		var jsonStr = []byte("{\"client_id\": \"1234567\", \"transaction\" : {\"total\" : \"" + paymentInfo.Price +
+		var jsonStr = []byte("{\"client_id\": \"1234567\", \"access_token\": \"" + token[0] +
+			"\", \"transaction\" : {\"total\" : \"" + paymentInfo.Price +
 			"\", \"currency\": \"EUR\"}, \"item_list\" : [{\"item_name\": \"Rental - " +
 			paymentInfo.CarID + "\",\"item_price\" : \"" + paymentInfo.Price + "\"}]}")
 		req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonStr))

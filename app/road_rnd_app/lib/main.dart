@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:road_rnd_app/tabs_view.dart';
 
 import 'login.dart';
 
