@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'dart:math';
 
 import 'global.dart';
 import 'car_view.dart';
 import 'car.dart';
 import 'dropdown.dart';
+
+final random = new Random();
 
 Future<List<Car>> fetchCars() async {
   print("Getting cars");
@@ -126,7 +129,7 @@ class _ListCarsState extends State<ListCars> {
                           title: Text(car.brand + " ${car.model}",
                               style: Theme.of(context).textTheme.bodyText1),
                           subtitle: Text(
-                              "X meters | ${car.price_per_minute} €/m",
+                              "${5 + random.nextInt(500)} meters | ${car.price_per_minute} €/m",
                               style: Theme.of(context).textTheme.bodyText2),
                           onTap: () {
                             goToCar(context, car);

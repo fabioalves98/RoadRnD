@@ -6,6 +6,7 @@ import 'dart:convert';
 
 import 'global.dart';
 import 'car.dart';
+import 'nfc_read.dart';
 
 class CarView extends StatefulWidget {
   final Car car;
@@ -22,6 +23,7 @@ class CarViewState extends State<CarView> {
   int seconds = 0;
   double curPrice = 0;
   Timer timer;
+  NFCRead nfc = NFCRead("http://roadrnd.westeurope.cloudapp.azure.com:5003");
 
   void startCount() {
     timer = Timer.periodic(
@@ -128,13 +130,33 @@ class CarViewState extends State<CarView> {
     );
   }
 
-  void unlockCar() {
-    print("Make post to unlock service");
+  void unlockCar() async {
+    print('Unlock Car - ${widget.car.id}');
+
+    String nfc_result = await nfc.readTag();
+    print(nfc_result);
+
+    if (nfc_result == "NFC Not Available") {
+      String unlock_result =
+          await nfc.unlock(widget.car.id, "tag1", Global.token);
+      print(unlock_result);
+    }
+  }
+
+  void lockCar() async {
+    print('Lock Car - ${widget.car.id}');
+
+    String nfc_result = await nfc.readTag();
+    print(nfc_result);
+
+    if (nfc_result == "NFC Not Available") {
+      String lock_result = await nfc.lock(widget.car.id, "tag1", Global.token);
+      print(lock_result);
+    }
   }
 
   void lockUnlock() async {
     if (locked) {
-      print('Unlock Car - ${widget.car.id}');
       await showDialog(
               context: context,
               builder: (BuildContext context) => unlockDialog(context))
@@ -143,8 +165,8 @@ class CarViewState extends State<CarView> {
         startCount();
       });
     } else {
-      print('Lock Car - ${widget.car.id}');
       stopCount();
+      lockCar();
     }
     setState(() {
       locked = !locked;
